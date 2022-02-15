@@ -1,60 +1,10 @@
-import React, { useState } from "react";
-import DaumPostcode from "react-daum-postcode";
-import axios from "axios";
+import { useState } from "react";
 
 export default function Insert() {
-  // const [sePoint, setSePoint] = useState({ start: "", end: "" });
-  const [address, setAddress] = useState("");
-  const [open, setOpen] = useState(false);
+  const [sePoint, setSePoint] = useState({ start: "", end: "" });
 
-  const postCodeStyle = {
-    display: "block",
-    position: "absolute",
-    top: "20%",
-    width: "400px",
-    height: "400px",
-    padding: "7px",
-    zIndex: 100,
-  };
-
-  async function handleComplete(data) {
-    // let fullAddr = data.address;
-    // let extraAddr = "";
-    // setAddress(fullAddr);
-
-    try {
-      await axios
-        .get(
-          `https://v2/local/search/address.json`,
-          { params: { query: data.address } },
-          {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              Host: process.env.REACT_APP_HOST,
-              Authorization:
-                "KakaoAK " + process.env.REACT_APP_KAKAO_REST_API_KEY,
-            },
-            withCredentials: true,
-          }
-        )
-        .then((res) => {
-          console.log(res);
-        });
-    } catch (err) {
-      console.log(err);
-    }
-    // let coord = await axios.get(
-    //   `http://v2/local/search/address.json`,
-    //   { params: { query: data.address } },
-    //   {
-    //     headers: {
-    //       "Content-Type": "application/x-www-form-urlencoded",
-    //       Host: process.env.REACT_APP_HOST,
-    //       Authorization: "KakaoAK " + process.env.REACT_APP_KAKAO_REST_API_KEY,
-    //     },
-    //     withCredentials: true,
-    //   }
-    // );
+  function insertHandler(e) {
+    setSePoint({ ...sePoint, [e.target.name]: e.target.value });
   }
 
   return (
@@ -67,7 +17,7 @@ export default function Insert() {
             className="start"
             placeholder="출발지를 입력해주세요"
             name="start"
-            onFocus={() => setOpen(true)}
+            onChange={insertHandler}
           />
         </label>
         <br />
@@ -78,22 +28,10 @@ export default function Insert() {
             className="end"
             placeholder="도착지를 입력해주세요"
             name="end"
-            onFocus={() => setOpen(true)}
+            onChange={insertHandler}
           />
         </label>
       </form>
-
-      {open ? (
-        <>
-          <DaumPostcode
-            style={postCodeStyle}
-            onComplete={handleComplete}
-            autoClose
-            animation={true}
-          />
-          {/* <p onClick={() => setOpen(false)}>X</p> */}
-        </>
-      ) : null}
     </div>
   );
 }
