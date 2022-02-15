@@ -13,7 +13,7 @@ export default function MapContainer() {
   return (
     <Map
       center={{ lat: 33.5563, lng: 126.79581 }}
-      style={{ width: "100%", height: "360px" }}
+      style={{ width: "100%", height: "50vh" }}
     >
       <MapMarker position={{ lat: 33.55635, lng: 126.795841 }} draggable={true}>
         <div style={{ color: "#000" }}>Hello World!</div>
