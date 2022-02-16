@@ -8,12 +8,12 @@ export default function MapContainer({
   endPosition,
   setEndPosition,
 }) {
+  
   const [map, setMap] = useState();
-  const [info, setInfo] = useState();
-
   const [linePosition, setLinePosition] = useState();
-  // console.log("!!", startPosition);
-  //console.log("??", endPosition);
+  // conole.log("!!", startPosition);
+  // console.log("??", endPosition);
+
 
   const startImage = {
     src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/red_b.png",
@@ -67,6 +67,21 @@ export default function MapContainer({
     // drawPolyline();
   }
 
+  function positionHandler(mouseEvent) {
+    let obj = {
+      lat: mouseEvent.latLng.Ma,
+      lng: mouseEvent.latLng.La,
+    };
+    if (isStart) {
+      setStartPosition(obj, () => {
+        return drawPolyline();
+      });
+    } else {
+      setEndPosition(obj, drawPolyline());
+      setEndPosition(obj, drawPolyline());
+    }
+  }
+
   async function drawPolyline() {
     if (startPosition && endPosition) {
       let route = await axios.post(
@@ -87,6 +102,7 @@ export default function MapContainer({
   }
 
   return (
+    <>
     <Map
       center={{
         lat: 37.604684142482995,
@@ -95,53 +111,31 @@ export default function MapContainer({
       style={{ width: "100%", height: "80vh" }}
       level={3}
       onCreate={(map) => setMap(map)}
+      onClick={(_t, mouseEvent) => {
+          positionHandler(mouseEvent);
+        }}
     >
       <MapMarker
-        position={{
-          lat: 37.60519059608592,
-          lng: 127.138191665098466,
-        }}
-        image={start}
-        draggable={true}
-        onDragStart={() => setStart(startDragImage)}
-        onDragEnd={() => {
-          setStart(startImage);
-          getPosition();
-        }}
+        position={startPosition}
+          image={start}
       />
-      <MapMarker
-        position={{
-          lat: 37.60811664844213,
-          lng: 127.14002611492096,
-        }}
-        image={end}
-        draggable={true}
-        onDragStart={() => setEnd(endDragImage)}
-        onDragEnd={(_t, mouseEvent) => {
-          setEnd(endImage);
-          console.log(mouseEvent.latLng.getLat());
-          setStartPosition({
-            lat: mouseEvent.latLng.getLat(),
-            lng: mouseEvent.latLng.getLng(),
-          });
-        }}
+        <MapMarker
+          position={endPosition}
+          image={end}
       />
       {linePosition && (
         <Polyline
           path={linePosition}
-          // path={[
-          //   [
-          //     { lat: 33.450701290001874, lng: 126.57114003106764 },
-          //     { lat: 33.4500702984696, lng: 126.57115037951364 },
-          //     { lat: 33.448935966849774, lng: 126.57051292434296 },
-          //   ],
-          // ]}
           strokeWeight={5}
           strokeColor={"#ff23cf"}
           strokeOpacity={0.7}
           strokeStyle={"solid"}
         />
-      )}
-    </Map>
+        )}
+      </Map>
+      <button onClick={() => setIsStart(!isStart)}>
+        {isStart ? "도착 위치 변경" : "출발 위치 변경"}
+      </button>
+    </>
   );
 }
