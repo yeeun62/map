@@ -9,10 +9,11 @@ export default function Insert({
   setStartPosition,
   setEndPosition,
   drawPolyline,
+  address,
+  setAddress,
   naviResult,
 }) {
   const [open, setOpen] = useState({ boolean: false, point: null });
-  const [address, setAddress] = useState({ start: "", end: "" });
 
   // useEffect(() => {
   //   drawPolyline();
@@ -29,7 +30,6 @@ export default function Insert({
   };
 
   async function handleComplete(data) {
-    setAddress(data.address);
     try {
       setOpen({ ...open, boolean: false });
       let getPosition = await axios.post(
@@ -38,8 +38,10 @@ export default function Insert({
         { withCredentials: true }
       );
       if (open.point === "start") {
+        setAddress({ ...address, start: data.address });
         setStartPosition(getPosition.data.data);
       } else if (open.point === "end") {
+        setAddress({ ...address, end: data.address });
         setEndPosition(getPosition.data.data);
       }
     } catch (err) {
@@ -49,7 +51,7 @@ export default function Insert({
 
   return (
     <div className="insertWrapper">
-      <form className="insertForm">
+      <form className="insertForm" onSubmit={(e) => e.preventDefault()}>
         <div className="formHeader">
           <img src="./menubar.png" className="menuBtn" />
           <h1 className="insertTitle logo">handle</h1>
@@ -73,11 +75,13 @@ export default function Insert({
               placeholder="도착지를 입력해주세요"
               name="end"
               onFocus={() => setOpen({ boolean: true, point: "end" })}
+              value={address.end}
+              readOnly
             />
           </label>
         </div>
       </form>
-      {open.boolean ? (
+      {open.boolean && (
         <>
           <p
             className="closeModal"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
 import "../style.css";
 
@@ -9,9 +9,10 @@ export default function MapContainer({
   setEndPosition,
   drawPolyline,
   linePosition,
+  getAddress,
+  isStart,
+  setIsStart,
 }) {
-  const [isStart, setIsStart] = useState(false);
-
   useEffect(() => {
     drawPolyline();
   }, [startPosition, endPosition]);
@@ -38,8 +39,14 @@ export default function MapContainer({
       lng: mouseEvent.latLng.getLng(),
     };
     if (isStart) {
+      getAddress(
+        mouseEvent.latLng.getLng(),
+        mouseEvent.latLng.getLat(),
+        "start"
+      );
       setStartPosition(obj);
     } else {
+      getAddress(mouseEvent.latLng.getLng(), mouseEvent.latLng.getLat(), "end");
       setEndPosition(obj);
     }
   }

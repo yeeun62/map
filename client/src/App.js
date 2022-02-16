@@ -14,6 +14,8 @@ function App() {
     lng: 127.13980450970118,
   });
   const [linePosition, setLinePosition] = useState(null);
+  const [address, setAddress] = useState({ start: "", end: "" });
+  const [isStart, setIsStart] = useState(false);
   const [naviResult, setNaviResult] = useState({ duration: "", distance: "" });
 
   async function drawPolyline() {
@@ -35,6 +37,24 @@ function App() {
     }
   }
 
+  async function getAddress(lng, lat, point) {
+    if (lng && lat) {
+      let address = await axios.post(
+        "http://localhost:80/coord",
+        {
+          lng,
+          lat,
+        },
+        { withCredentials: true }
+      );
+      if (point === "start") {
+        setAddress({ ...address, start: address.data.address });
+      } else {
+        setAddress({ ...address, end: address.data.address });
+      }
+    }
+  }
+
   return (
     <div className="App">
       <MapContainer
@@ -44,6 +64,9 @@ function App() {
         setEndPosition={setEndPosition}
         drawPolyline={drawPolyline}
         linePosition={linePosition}
+        getAddress={getAddress}
+        isStart={isStart}
+        setIsStart={setIsStart}
       />
       <Insert
         startPosition={startPosition}
@@ -51,6 +74,8 @@ function App() {
         setStartPosition={setStartPosition}
         setEndPosition={setEndPosition}
         drawPolyline={drawPolyline}
+        address={address}
+        setAddress={setAddress}
         naviResult={naviResult}
       />
     </div>

@@ -32,6 +32,7 @@ function msToTime(duration) {
   return `${hours}시간 ${minutes}분 ${seconds}초`;
 }
 
+//! 길찾기
 app.post("/navi", async (req, res) => {
   try {
     let navi = await axios.get(
@@ -60,6 +61,7 @@ app.post("/navi", async (req, res) => {
   }
 });
 
+//! 선 그리기 좌표
 app.post("/position", async (req, res) => {
   try {
     let position = await axios.get(
@@ -77,6 +79,23 @@ app.post("/position", async (req, res) => {
       lng: Number(position.data.documents[0].x),
     };
     res.status(200).json({ data });
+  } catch (err) {
+    console.log(err.response);
+  }
+});
+
+//! 좌표를 행정구역으로 변환
+app.post("/coord", async (req, res) => {
+  try {
+    let coord = await axios.get(
+      `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${req.body.lng}&y=${req.body.lat}`,
+      {
+        headers: {
+          Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
+        },
+      }
+    );
+    res.status(200).json({ address: coord.data.documents[0].address_name });
   } catch (err) {
     console.log(err.response);
   }
