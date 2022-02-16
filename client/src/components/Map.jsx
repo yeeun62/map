@@ -4,12 +4,19 @@ import axios from "axios";
 
 export default function MapContainer() {
   const [map, setMap] = useState();
-  const [startPosition, setStartPosition] = useState();
-  const [endPosition, setEndPosition] = useState();
+  const [startPosition, setStartPosition] = useState({
+    lat: 33.450701,
+    lng: 126.570667,
+  });
+  const [endPosition, setEndPosition] = useState({
+    lat: 33.450701,
+    lng: 126.572667,
+  });
   const [linePosition, setLinePosition] = useState();
   // console.log("!!", startPosition);
   // console.log("??", endPosition);
   // console.log("~~", linePosition);
+  const [isStart, setIsStart] = useState(true);
 
   const startImage = {
     src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/red_b.png",
@@ -60,6 +67,21 @@ export default function MapContainer() {
     drawPolyline();
   }
 
+  function positionHandler(mouseEvent) {
+    let obj = {
+      lat: mouseEvent.latLng.Ma,
+      lng: mouseEvent.latLng.La,
+    };
+    if (isStart) {
+      setStartPosition(obj, () => {
+        return drawPolyline();
+      });
+    } else {
+      setEndPosition(obj, drawPolyline());
+      setEndPosition(obj, drawPolyline());
+    }
+  }
+
   async function drawPolyline() {
     if (startPosition && endPosition) {
       let route = await axios.post(
@@ -80,57 +102,53 @@ export default function MapContainer() {
   }
 
   return (
-    <Map
-      center={{
-        lat: 33.450701,
-        lng: 126.570667,
-      }}
-      style={{ width: "100%", height: "100vh" }}
-      level={3}
-      onCreate={(map) => setMap(map)}
-    >
-      <MapMarker
-        position={{
+    <>
+      <Map
+        center={{
           lat: 33.450701,
           lng: 126.570667,
         }}
-        image={start}
-        draggable={true}
-        onDragStart={() => setStart(startDragImage)}
-        onDragEnd={() => {
-          setStart(startImage);
-          getPosition();
+        style={{ width: "100%", height: "50vh" }}
+        level={3}
+        onCreate={(map) => setMap(map)}
+        onClick={(_t, mouseEvent) => {
+          positionHandler(mouseEvent);
         }}
-      />
-      <MapMarker
-        position={{
-          lat: 33.450701,
-          lng: 126.572667,
-        }}
-        image={end}
-        draggable={true}
-        onDragStart={() => setEnd(endDragImage)}
-        onDragEnd={() => {
-          setEnd(endImage);
-          getPosition("end");
-        }}
-      />
-      {linePosition && (
-        <Polyline
-          path={linePosition}
-          // path={[
-          //   [
-          //     { lat: 33.450701290001874, lng: 126.57114003106764 },
-          //     { lat: 33.4500702984696, lng: 126.57115037951364 },
-          //     { lat: 33.448935966849774, lng: 126.57051292434296 },
-          //   ],
-          // ]}
-          strokeWeight={5} // 선의 두께 입니다
-          strokeColor={"#ff23cf"} // 선의 색깔입니다
-          strokeOpacity={0.7} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-          strokeStyle={"solid"} // 선의 스타일입니다
+      >
+        <MapMarker
+          position={startPosition}
+          image={start}
+          // draggable={true}
+          // onDragStart={() => setStart(startDragImage)}
+          // onDragEnd={(e) => {
+          //   console.log(e);
+          //   setStart(startImage);
+          //   getPosition();
+          // }}
         />
-      )}
-    </Map>
+        <MapMarker
+          position={endPosition}
+          image={end}
+          // draggable={true}
+          // onDragStart={() => setEnd(endDragImage)}
+          // onDragEnd={() => {
+          //   setEnd(endImage);
+          //   getPosition("end");
+          // }}
+        />
+        {linePosition && (
+          <Polyline
+            path={linePosition}
+            strokeWeight={5} // 선의 두께 입니다
+            strokeColor={"#ff23cf"} // 선의 색깔입니다
+            strokeOpacity={0.7} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+            strokeStyle={"solid"} // 선의 스타일입니다
+          />
+        )}
+      </Map>
+      <button onClick={() => setIsStart(!isStart)}>
+        {isStart ? "도착 위치 변경" : "출발 위치 변경"}
+      </button>
+    </>
   );
 }

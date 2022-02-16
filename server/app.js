@@ -38,4 +38,28 @@ app.post("/navi", async (req, res) => {
   }
 });
 
+app.post("/coord", async (req, res) => {
+  let query = req.body.query;
+  console.log(req.body.query);
+  try {
+    let coord = await axios.get(
+      `https:///v2/local/search/address.json?query=${query}`,
+      {
+        headers: { Authorization: "KakaoAK " + process.env.KAKAO_REST_API_KEY },
+      },
+      { withCredentials: true }
+    );
+
+    console.log(coord);
+    if (coord.satus === 200) {
+      res.status(200).json({ message: "성공" });
+    } else {
+      res.status(400).json({ message: "요청 실패" });
+    }
+  } catch (err) {
+    //console.log(err, "에러");
+    res.status(400).json({ message: "올바른 요청이 아닙니다" });
+  }
+});
+
 app.listen(80, () => console.log("네비서버"));

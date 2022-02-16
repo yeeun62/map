@@ -1,10 +1,40 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import DaumPostcode from "react-daum-postcode";
+import axios from "axios";
 
 export default function Insert() {
-  const [sePoint, setSePoint] = useState({ start: "", end: "" });
+  // const [sePoint, setSePoint] = useState({ start: "", end: "" });
+  const [address, setAddress] = useState("");
+  const [open, setOpen] = useState(false);
 
-  function insertHandler(e) {
-    setSePoint({ ...sePoint, [e.target.name]: e.target.value });
+  const postCodeStyle = {
+    display: "block",
+    position: "absolute",
+    top: "20%",
+    width: "400px",
+    height: "400px",
+    padding: "7px",
+    zIndex: 100,
+  };
+
+  async function handleComplete(data) {
+    // let fullAddr = data.address;
+    // let extraAddr = "";
+    // setAddress(fullAddr);
+
+    try {
+      await axios
+        .post(
+          "http://localhost:80/coord",
+          { query: data.address },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          console.log(res);
+        });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (
@@ -17,7 +47,7 @@ export default function Insert() {
             className="start"
             placeholder="출발지를 입력해주세요"
             name="start"
-            onChange={insertHandler}
+            onFocus={() => setOpen(true)}
           />
         </label>
         <br />
@@ -28,10 +58,21 @@ export default function Insert() {
             className="end"
             placeholder="도착지를 입력해주세요"
             name="end"
-            onChange={insertHandler}
+            onFocus={() => setOpen(true)}
           />
         </label>
       </form>
+
+      {open ? (
+        <>
+          <DaumPostcode
+            style={postCodeStyle}
+            onComplete={handleComplete}
+            autoClose
+            animation={true}
+          />
+        </>
+      ) : null}
     </div>
   );
 }
