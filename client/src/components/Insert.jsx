@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import DaumPostcode from "react-daum-postcode";
 import axios from "axios";
 
-export default function Insert() {
-  // const [sePoint, setSePoint] = useState({ start: "", end: "" });
-  const [address, setAddress] = useState("");
-  const [open, setOpen] = useState(false);
+export default function Insert({
+  startPosition,
+  setStartPosition,
+  endPosition,
+  setEndPosition,
+}) {
+  const [open, setOpen] = useState({ boolean: false, point: null });
 
   const postCodeStyle = {
     display: "block",
@@ -18,20 +21,17 @@ export default function Insert() {
   };
 
   async function handleComplete(data) {
-    // let fullAddr = data.address;
-    // let extraAddr = "";
-    // setAddress(fullAddr);
-
     try {
-      await axios
-        .post(
-          "http://localhost:80/coord",
-          { query: data.address },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          console.log(res);
-        });
+      let getPosition = await axios.post(
+        "http://localhost:80/position",
+        { address: data.address },
+        { withCredentials: true }
+      );
+      if (open.point === "start") {
+        setStartPosition(getPosition.data.data);
+      } else if (open.point === "end") {
+        setEndPosition(getPosition.data.data);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -39,7 +39,6 @@ export default function Insert() {
 
   return (
     <div className="insertWrapper">
-      {/* onSubmit={} */}
       <form>
         <label>
           출발지 입력
@@ -47,7 +46,7 @@ export default function Insert() {
             className="start"
             placeholder="출발지를 입력해주세요"
             name="start"
-            onFocus={() => setOpen(true)}
+            onFocus={() => setOpen({ boolean: true, point: "start" })}
           />
         </label>
         <br />
@@ -58,18 +57,16 @@ export default function Insert() {
             className="end"
             placeholder="도착지를 입력해주세요"
             name="end"
-            onFocus={() => setOpen(true)}
+            onFocus={() => setOpen({ boolean: true, point: "end" })}
           />
         </label>
       </form>
-
-      {open ? (
+      {open.boolean ? (
         <>
           <DaumPostcode
             style={postCodeStyle}
             onComplete={handleComplete}
             autoClose
-            animation={true}
           />
         </>
       ) : null}

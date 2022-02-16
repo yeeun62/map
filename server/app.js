@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const axios = require("axios");
+require("dotenv").config();
 
 app.use(express.json());
 app.use(
@@ -18,13 +19,13 @@ app.get("/", (req, res) => {
 
 app.post("/navi", async (req, res) => {
   try {
-    console.log(req.body.start);
-    console.log("!", req.body.end);
+    console.log("?", req.body.start);
+    // console.log("!", req.body.end);
     let navi = await axios.get(
       `https://apis-navi.kakaomobility.com/v1/directions?origin=${req.body.start}&destination=${req.body.end}`,
       {
         headers: {
-          Authorization: "KakaoAK c08c1de5f67a02bb8fc6421fb3b5233c",
+          Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
         },
       }
     );
@@ -38,27 +39,25 @@ app.post("/navi", async (req, res) => {
   }
 });
 
-app.post("/coord", async (req, res) => {
-  let query = req.body.query;
-  console.log(req.body.query);
+app.post("/position", async (req, res) => {
   try {
-    let coord = await axios.get(
-      `https:///v2/local/search/address.json?query=${query}`,
+    let position = await axios.get(
+      encodeURI(
+        `https://dapi.kakao.com/v2/local/search/address.json?query=${req.body.address}`
+      ),
       {
-        headers: { Authorization: "KakaoAK " + process.env.KAKAO_REST_API_KEY },
-      },
-      { withCredentials: true }
+        headers: {
+          Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
+        },
+      }
     );
-
-    console.log(coord);
-    if (coord.satus === 200) {
-      res.status(200).json({ message: "성공" });
-    } else {
-      res.status(400).json({ message: "요청 실패" });
-    }
+    let data = {
+      lat: Number(position.data.documents[0].y),
+      lan: Number(position.data.documents[0].x),
+    };
+    res.status(200).json({ data });
   } catch (err) {
-    //console.log(err, "에러");
-    res.status(400).json({ message: "올바른 요청이 아닙니다" });
+    console.log(err.response);
   }
 });
 

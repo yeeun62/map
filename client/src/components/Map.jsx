@@ -2,21 +2,18 @@ import React, { useState } from "react";
 import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
 import axios from "axios";
 
-export default function MapContainer() {
+export default function MapContainer({
+  startPosition,
+  setStartPosition,
+  endPosition,
+  setEndPosition,
+}) {
+  
   const [map, setMap] = useState();
-  const [startPosition, setStartPosition] = useState({
-    lat: 33.450701,
-    lng: 126.570667,
-  });
-  const [endPosition, setEndPosition] = useState({
-    lat: 33.450701,
-    lng: 126.572667,
-  });
   const [linePosition, setLinePosition] = useState();
-  // console.log("!!", startPosition);
+  // conole.log("!!", startPosition);
   // console.log("??", endPosition);
-  // console.log("~~", linePosition);
-  const [isStart, setIsStart] = useState(true);
+
 
   const startImage = {
     src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/red_b.png",
@@ -53,18 +50,21 @@ export default function MapContainer() {
   const [end, setEnd] = useState(endImage);
 
   function getPosition(point) {
+    console.log("실행");
     if (point === "end") {
       setEndPosition({
         lat: map.getCenter().getLat(),
         lng: map.getCenter().getLng(),
       });
     } else {
+      console.log("!", map.getCenter().getLat());
       setStartPosition({
+        ...startPosition,
         lat: map.getCenter().getLat(),
         lng: map.getCenter().getLng(),
       });
     }
-    drawPolyline();
+    // drawPolyline();
   }
 
   function positionHandler(mouseEvent) {
@@ -92,7 +92,7 @@ export default function MapContainer() {
         },
         { withCredentials: true }
       );
-      console.log(route.data.data);
+      console.log(route.data.data.routes[0].sections);
       let linePosition = route.data.data.routes[0].sections[0].guides;
       let linePositionList = linePosition.map((el) => {
         return { lat: el.y, lng: el.x };
@@ -103,47 +103,34 @@ export default function MapContainer() {
 
   return (
     <>
-      <Map
-        center={{
-          lat: 33.450701,
-          lng: 126.570667,
-        }}
-        style={{ width: "100%", height: "50vh" }}
-        level={3}
-        onCreate={(map) => setMap(map)}
-        onClick={(_t, mouseEvent) => {
+    <Map
+      center={{
+        lat: 37.604684142482995,
+        lng: 127.13980450970118,
+      }}
+      style={{ width: "100%", height: "80vh" }}
+      level={3}
+      onCreate={(map) => setMap(map)}
+      onClick={(_t, mouseEvent) => {
           positionHandler(mouseEvent);
         }}
-      >
-        <MapMarker
-          position={startPosition}
+    >
+      <MapMarker
+        position={startPosition}
           image={start}
-          // draggable={true}
-          // onDragStart={() => setStart(startDragImage)}
-          // onDragEnd={(e) => {
-          //   console.log(e);
-          //   setStart(startImage);
-          //   getPosition();
-          // }}
-        />
+      />
         <MapMarker
           position={endPosition}
           image={end}
-          // draggable={true}
-          // onDragStart={() => setEnd(endDragImage)}
-          // onDragEnd={() => {
-          //   setEnd(endImage);
-          //   getPosition("end");
-          // }}
+      />
+      {linePosition && (
+        <Polyline
+          path={linePosition}
+          strokeWeight={5}
+          strokeColor={"#ff23cf"}
+          strokeOpacity={0.7}
+          strokeStyle={"solid"}
         />
-        {linePosition && (
-          <Polyline
-            path={linePosition}
-            strokeWeight={5} // 선의 두께 입니다
-            strokeColor={"#ff23cf"} // 선의 색깔입니다
-            strokeOpacity={0.7} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-            strokeStyle={"solid"} // 선의 스타일입니다
-          />
         )}
       </Map>
       <button onClick={() => setIsStart(!isStart)}>
