@@ -1,16 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DaumPostcode from "react-daum-postcode";
 import axios from "axios";
 import "../style.css";
 
 export default function Insert({
   startPosition,
-  setStartPosition,
   endPosition,
+  setStartPosition,
   setEndPosition,
+  drawPolyline,
 }) {
   const [open, setOpen] = useState({ boolean: false, point: null });
   const [address, setAddress] = useState({ start: "", end: "" });
+
+  useEffect(() => {
+    drawPolyline();
+  }, [startPosition, endPosition]);
 
   const postCodeStyle = {
     display: "block",
@@ -25,6 +30,7 @@ export default function Insert({
   async function handleComplete(data) {
     setAddress(data.address);
     try {
+      setOpen({ ...open, boolean: false });
       let getPosition = await axios.post(
         "http://localhost:80/position",
         { address: data.address },
@@ -33,7 +39,6 @@ export default function Insert({
       if (open.point === "start") {
         setStartPosition(getPosition.data.data);
       } else if (open.point === "end") {
-        console.log("!!");
         setEndPosition(getPosition.data.data);
       }
     } catch (err) {
