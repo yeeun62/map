@@ -10,13 +10,16 @@
 }
 
 .pointButton {
+  cursor: pointer;
+  z-index: 2000;
   position: absolute;
   width: 6.5rem;
   height: 1.5rem;
   top: 12rem;
   left: 20px;
   background: #fff;
-  color: #258fff;
+  color: rgb(85, 85, 85);
+  font-weight: bold;
   border: none;
   border-radius: 5px;
 }
@@ -29,6 +32,7 @@
   height: 100vh;
   box-shadow: inset -2px 5px 5px #ccc;
   position: relative;
+  z-index: 1000;
 }
 
 .insertForm {
@@ -74,6 +78,7 @@
 }
 
 .closeModal {
+  cursor: pointer;
   display: block;
   width: 30px;
   position: absolute;
