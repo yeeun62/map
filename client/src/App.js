@@ -4,8 +4,14 @@ import Insert from "./components/Insert";
 import "./App.css";
 
 function App() {
-  const [startPosition, setStartPosition] = useState();
-  const [endPosition, setEndPosition] = useState();
+  const [startPosition, setStartPosition] = useState({
+    lat: 37.603684142482995,
+    lng: 127.13980450970118,
+  });
+  const [endPosition, setEndPosition] = useState({
+    lat: 37.604684142482995,
+    lng: 127.13980450970118,
+  });
 
   return (
     <div className="App">
