@@ -11,12 +11,13 @@ export default function Insert({
   drawPolyline,
   address,
   setAddress,
+  naviResult,
 }) {
   const [open, setOpen] = useState({ boolean: false, point: null });
 
-  useEffect(() => {
-    drawPolyline();
-  }, [startPosition, endPosition]);
+  // useEffect(() => {
+  //   drawPolyline();
+  // }, [startPosition, endPosition]);
 
   const postCodeStyle = {
     display: "block",
@@ -94,8 +95,17 @@ export default function Insert({
             autoClose
           />
         </>
-      )}
-      <div style={{ background: "#fff", width: "100%", height: "100%" }}></div>
+      ) : null}
+      <div className="naviResult">
+        <div className="naviDuration">
+          <h2>시간</h2>
+          {naviResult.duration && <p>{naviResult.duration}</p>}
+        </div>
+        <div className="naviDistance">
+          <h2>거리</h2>
+          {naviResult.distance && <p>{naviResult.distance}</p>}
+        </div>
+      </div>
     </div>
   );
 }

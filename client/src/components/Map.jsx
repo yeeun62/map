@@ -76,9 +76,14 @@ export default function MapContainer({
           />
         )}
       </Map>
-      <button className="pointButton" onClick={() => setIsStart(!isStart)}>
-        {isStart ? "도착 위치 변경" : "출발 위치 변경"}
-      </button>
+      <div className="pointButton" onClick={() => setIsStart(!isStart)}>
+        {isStart ? (
+          <span style={{ color: "#1ba5f5" }}>도착 </span>
+        ) : (
+          <span style={{ color: "#ed695a" }}>출발 </span>
+        )}
+        위치 변경
+      </div>
     </div>
   );
 }
