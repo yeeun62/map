@@ -1,0 +1,85 @@
+.mapContainer {
+  position: relative;
+}
+
+.mapComponent {
+  width: 80%;
+  height: 100vh;
+  position: absolute;
+  right: 0;
+}
+
+.pointButton {
+  position: absolute;
+  width: 6.5rem;
+  height: 1.5rem;
+  top: 12rem;
+  left: 20px;
+  background: #fff;
+  color: #258fff;
+  border: none;
+  border-radius: 5px;
+}
+
+/* 👇아래로 insert /// 👆위로 map -------------------------------------------------- */
+
+.insertWrapper {
+  min-width: 20rem;
+  width: 20%;
+  height: 100vh;
+  box-shadow: inset -2px 5px 5px #ccc;
+  position: relative;
+}
+
+.insertForm {
+  height: 14.5rem;
+  background: #258fff;
+  color: #fff;
+  font-weight: 500;
+  padding: 20px;
+  box-shadow: inset -2px 0 2px #95c0ed;
+}
+
+.formHeader {
+  display: flex;
+  align-items: baseline;
+}
+
+.menuBtn {
+  width: 1.2rem;
+  margin-right: 10px;
+}
+
+.insertTitle {
+  text-align: left;
+  font-size: 1.5rem;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.inputContainer {
+  width: 100%;
+}
+
+.inputContainer label {
+  display: block;
+  width: 100%;
+  height: 3rem;
+}
+
+.inputContainer label input {
+  margin-left: 10px;
+  width: 70%;
+  height: 1.8rem;
+}
+
+.closeModal {
+  display: block;
+  width: 30px;
+  position: absolute;
+  top: 4.5%;
+  right: -30px;
+  background: #fff;
+  font-size: 1.5rem;
+  z-index: 500;
+}
