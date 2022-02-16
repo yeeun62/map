@@ -14,6 +14,7 @@ function App() {
     lng: 127.13980450970118,
   });
   const [linePosition, setLinePosition] = useState(null);
+  const [naviResult, setNaviResult] = useState({ duration: "", distance: "" });
 
   async function drawPolyline() {
     if (startPosition && endPosition) {
@@ -29,6 +30,7 @@ function App() {
       let linePositionList = linePosition.map((el) => {
         return { lat: el.y, lng: el.x };
       });
+      setNaviResult(route.data.route);
       setLinePosition(linePositionList);
     }
   }
@@ -49,6 +51,7 @@ function App() {
         setStartPosition={setStartPosition}
         setEndPosition={setEndPosition}
         drawPolyline={drawPolyline}
+        naviResult={naviResult}
       />
     </div>
   );

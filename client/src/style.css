@@ -10,25 +10,32 @@
 }
 
 .pointButton {
+  cursor: pointer;
+  z-index: 2000;
   position: absolute;
   width: 6.5rem;
   height: 1.5rem;
   top: 12rem;
-  left: 20px;
+  left: 9.25rem;
   background: #fff;
-  color: #258fff;
+  color: rgb(85, 85, 85);
+  font-weight: bold;
   border: none;
   border-radius: 5px;
+  font-size: 0.8rem;
+  line-height: 1.5rem;
 }
 
 /* 👇아래로 insert /// 👆위로 map -------------------------------------------------- */
 
 .insertWrapper {
-  min-width: 20rem;
+  min-width: 25rem;
   width: 20%;
   height: 100vh;
-  box-shadow: inset -2px 5px 5px #ccc;
+  box-shadow: 2px 5px 10px #999;
   position: relative;
+  z-index: 1000;
+  background: #fff;
 }
 
 .insertForm {
@@ -36,8 +43,7 @@
   background: #258fff;
   color: #fff;
   font-weight: 500;
-  padding: 20px;
-  box-shadow: inset -2px 0 2px #95c0ed;
+  padding: 10px 20px;
 }
 
 .formHeader {
@@ -73,7 +79,27 @@
   height: 1.8rem;
 }
 
+.naviResult {
+  width: 100%;
+}
+
+.naviDuration,
+.naviDistance {
+  width: 90%;
+  margin: auto;
+  display: flex;
+  align-items: baseline;
+  border-bottom: 1px solid #ccc;
+}
+
+.naviDuration h2,
+.naviDistance h2 {
+  width: 5rem;
+  font-size: 1.2rem;
+}
+
 .closeModal {
+  cursor: pointer;
   display: block;
   width: 30px;
   position: absolute;
