@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
-import axios from "axios";
 
 export default function MapContainer({
   startPosition,
   setStartPosition,
   endPosition,
   setEndPosition,
+  drawPolyline,
+  linePosition,
 }) {
-  
-  const [linePosition, setLinePosition] = useState();
   const [isStart, setIsStart] = useState(false);
 
   useEffect(() => {
     drawPolyline();
-  }, [positionHandler]);
+  }, [startPosition, endPosition]);
 
   const startImage = {
     src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/red_b.png",
@@ -41,25 +40,6 @@ export default function MapContainer({
       setStartPosition(obj);
     } else {
       setEndPosition(obj);
-    }
-    drawPolyline();
-  }
-
-  async function drawPolyline() {
-    if (startPosition && endPosition) {
-      let route = await axios.post(
-        "http://localhost:80/navi",
-        {
-          start: `${startPosition.lng},${startPosition.lat}`,
-          end: `${endPosition.lng},${endPosition.lat}`,
-        },
-        { withCredentials: true }
-      );
-      let linePosition = route.data.data.routes[0].sections[0].guides;
-      let linePositionList = linePosition.map((el) => {
-        return { lat: el.y, lng: el.x };
-      });
-      setLinePosition(linePositionList);
     }
   }
 
