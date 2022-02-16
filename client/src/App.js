@@ -5,7 +5,7 @@ import "./App.css";
 
 function App() {
   const [startPosition, setStartPosition] = useState({
-    lat: 37.604684142482995,
+    lat: 37.603684142482995,
     lng: 127.13980450970118,
   });
   const [endPosition, setEndPosition] = useState({
