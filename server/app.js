@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const axios = require("axios");
+require("dotenv").config();
 
 app.use(express.json());
 app.use(
@@ -18,13 +19,13 @@ app.get("/", (req, res) => {
 
 app.post("/navi", async (req, res) => {
   try {
-    console.log(req.body.start);
-    console.log("!", req.body.end);
+    console.log("?", req.body.start);
+    // console.log("!", req.body.end);
     let navi = await axios.get(
       `https://apis-navi.kakaomobility.com/v1/directions?origin=${req.body.start}&destination=${req.body.end}`,
       {
         headers: {
-          Authorization: "KakaoAK c08c1de5f67a02bb8fc6421fb3b5233c",
+          Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
         },
       }
     );
@@ -33,6 +34,28 @@ app.post("/navi", async (req, res) => {
     } else {
       res.status(500).json({ message: "에러에러" });
     }
+  } catch (err) {
+    console.log(err.response);
+  }
+});
+
+app.post("/position", async (req, res) => {
+  try {
+    let position = await axios.get(
+      encodeURI(
+        `https://dapi.kakao.com/v2/local/search/address.json?query=${req.body.address}`
+      ),
+      {
+        headers: {
+          Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
+        },
+      }
+    );
+    let data = {
+      lat: Number(position.data.documents[0].y),
+      lan: Number(position.data.documents[0].x),
+    };
+    res.status(200).json({ data });
   } catch (err) {
     console.log(err.response);
   }
