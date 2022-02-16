@@ -8,6 +8,7 @@ export default function MapContainer({
   endPosition,
   setEndPosition,
 }) {
+  
   const [linePosition, setLinePosition] = useState();
   const [isStart, setIsStart] = useState(false);
 
@@ -41,6 +42,7 @@ export default function MapContainer({
     } else {
       setEndPosition(obj);
     }
+    drawPolyline();
   }
 
   async function drawPolyline() {

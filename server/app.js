@@ -49,6 +49,7 @@ app.post("/position", async (req, res) => {
         },
       }
     );
+    console.log("dddddddd");
     let data = {
       lat: Number(position.data.documents[0].y),
       lng: Number(position.data.documents[0].x),
