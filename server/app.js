@@ -19,8 +19,6 @@ app.get("/", (req, res) => {
 
 app.post("/navi", async (req, res) => {
   try {
-    console.log("?", req.body.start);
-    // console.log("!", req.body.end);
     let navi = await axios.get(
       `https://apis-navi.kakaomobility.com/v1/directions?origin=${req.body.start}&destination=${req.body.end}`,
       {
@@ -53,7 +51,7 @@ app.post("/position", async (req, res) => {
     );
     let data = {
       lat: Number(position.data.documents[0].y),
-      lan: Number(position.data.documents[0].x),
+      lng: Number(position.data.documents[0].x),
     };
     res.status(200).json({ data });
   } catch (err) {

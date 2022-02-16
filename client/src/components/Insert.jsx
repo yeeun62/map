@@ -30,6 +30,7 @@ export default function Insert({
       if (open.point === "start") {
         setStartPosition(getPosition.data.data);
       } else if (open.point === "end") {
+        console.log("!!");
         setEndPosition(getPosition.data.data);
       }
     } catch (err) {
