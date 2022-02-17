@@ -13,10 +13,10 @@
   cursor: pointer;
   z-index: 2000;
   position: absolute;
-  width: 6.5rem;
+  width: 8.5rem;
   height: 1.5rem;
   top: 12rem;
-  left: 9.25rem;
+  left: 8.25rem;
   background: #fff;
   color: rgb(85, 85, 85);
   font-weight: bold;
@@ -118,8 +118,8 @@
   cursor: pointer;
   background: #258fff;
   width: 30px;
-  height: 40px;
-  line-height: 40px;
+  height: 50px;
+  line-height: 50px;
   color: #fff;
   font-weight: 700;
   font-size: 20px;

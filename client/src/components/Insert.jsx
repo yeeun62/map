@@ -53,8 +53,7 @@ export default function Insert({
       >
         <form className="insertForm" onSubmit={(e) => e.preventDefault()}>
           <div className="formHeader">
-            {/* <img src="./menubar.png" className="menuBtn" /> */}
-            <h1 className="insertTitle logo">handle navigate</h1>
+            <h1 className="insertTitle logo">handle</h1>
           </div>
           <div className="inputContainer">
             <label>
@@ -67,39 +66,49 @@ export default function Insert({
                 value={address.start}
                 readOnly
               />
-          </label>
-          <label>
-            도착지 입력
-            <input
-              className="end"
-              placeholder="도착지를 입력해주세요"
-              name="end"
-              onFocus={() => setOpen({ boolean: true, point: "end" })}
-              value={address.end}
-              readOnly
-            />
-          </label>
+            </label>
+            <label>
+              도착지 입력
+              <input
+                className="end"
+                placeholder="도착지를 입력해주세요"
+                name="end"
+                onFocus={() => setOpen({ boolean: true, point: "end" })}
+                value={address.end}
+                readOnly
+              />
+            </label>
+          </div>
+        </form>
+        <div className="pointButton" onClick={() => setIsStart(!isStart)}>
+          지도에서
+          {isStart ? (
+            <span style={{ color: "#1ba5f5" }}> 도착 </span>
+          ) : (
+            <span style={{ color: "#ed695a" }}> 출발 </span>
+          )}
+          위치 변경
         </div>
-      </form>
-      {open.boolean && (
-        <>
-          <p
-            className="closeModal"
-            onClick={() => setOpen({ ...open, boolean: false })}
-          >
-            X
-          </p>
-          <DaumPostcode style={postCodeStyle} onComplete={handleComplete} />
-        </>
-      )}
-      <div className="naviResult">
-        <div className="naviDuration">
-          <h2>시간</h2>
-          {naviResult.duration && <p>{naviResult.duration}</p>}
-        </div>
-        <div className="naviDistance">
-          <h2>거리</h2>
-          {naviResult.distance && <p>{naviResult.distance}</p>}
+        {open.boolean && (
+          <>
+            <p
+              className="closeModal"
+              onClick={() => setOpen({ ...open, boolean: false })}
+            >
+              X
+            </p>
+            <DaumPostcode style={postCodeStyle} onComplete={handleComplete} />
+          </>
+        )}
+        <div className="naviResult">
+          <div className="naviDuration">
+            <h2>시간</h2>
+            {naviResult.duration && <p>{naviResult.duration}</p>}
+          </div>
+          <div className="naviDistance">
+            <h2>거리</h2>
+            {naviResult.distance && <p>{naviResult.distance}</p>}
+          </div>
         </div>
       </div>
       <div
