@@ -9,8 +9,11 @@ export default function Insert({
   address,
   setAddress,
   naviResult,
+  isStart,
+  setIsStart,
 }) {
   const [open, setOpen] = useState({ boolean: false, point: null });
+  const [isInsertOpen, setIsInsertOpen] = useState(true);
 
   const postCodeStyle = {
     display: "block",
@@ -19,7 +22,7 @@ export default function Insert({
     right: "-400px",
     width: "400px",
     height: "500px",
-    zIndex: 100,
+    zIndex: 300,
   };
 
   async function handleComplete(data) {
@@ -43,23 +46,27 @@ export default function Insert({
   }
 
   return (
-    <div className="insertWrapper">
-      <form className="insertForm" onSubmit={(e) => e.preventDefault()}>
-        <div className="formHeader">
-          <img src="./menubar.png" className="menuBtn" />
-          <h1 className="insertTitle logo">handle</h1>
-        </div>
-        <div className="inputContainer">
-          <label>
-            출발지 입력
-            <input
-              className="start"
-              placeholder="출발지를 입력해주세요"
-              name="start"
-              onFocus={() => setOpen({ boolean: true, point: "start" })}
-              value={address.start}
-              readOnly
-            />
+    <div className="sidebar">
+      <div
+        className="insertWrapper"
+        style={isInsertOpen ? { display: "block" } : { display: "none" }}
+      >
+        <form className="insertForm" onSubmit={(e) => e.preventDefault()}>
+          <div className="formHeader">
+            {/* <img src="./menubar.png" className="menuBtn" /> */}
+            <h1 className="insertTitle logo">handle navigate</h1>
+          </div>
+          <div className="inputContainer">
+            <label>
+              출발지 입력
+              <input
+                className="start"
+                placeholder="출발지를 입력해주세요"
+                name="start"
+                onFocus={() => setOpen({ boolean: true, point: "start" })}
+                value={address.start}
+                readOnly
+              />
           </label>
           <label>
             도착지 입력
@@ -94,6 +101,19 @@ export default function Insert({
           <h2>거리</h2>
           {naviResult.distance && <p>{naviResult.distance}</p>}
         </div>
+      </div>
+      <div
+        className="isInsertOpen"
+        style={
+          isInsertOpen
+            ? open.boolean
+              ? { display: "none" }
+              : { display: "block", left: "25rem" }
+            : { left: "0" }
+        }
+        onClick={() => setIsInsertOpen(!isInsertOpen)}
+      >
+        {isInsertOpen ? "<" : ">"}
       </div>
     </div>
   );

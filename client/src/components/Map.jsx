@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
+import { Map, MapMarker, Polyline, ZoomControl } from "react-kakao-maps-sdk";
 import "../style.css";
 
 export default function MapContainer({
@@ -11,7 +11,6 @@ export default function MapContainer({
   linePosition,
   getAddress,
   isStart,
-  setIsStart,
   currentLocation,
 }) {
   useEffect(() => {
@@ -63,6 +62,7 @@ export default function MapContainer({
         }}
         className="mapComponent"
       >
+        <ZoomControl position={kakao.maps.ControlPosition.TOPRIGHT} />
         <MapMarker position={startPosition} image={startImage} />
         <MapMarker position={endPosition} image={endImage} />
         {linePosition && (
@@ -75,14 +75,6 @@ export default function MapContainer({
           />
         )}
       </Map>
-      <div className="pointButton" onClick={() => setIsStart(!isStart)}>
-        {isStart ? (
-          <span style={{ color: "#1ba5f5" }}>도착 </span>
-        ) : (
-          <span style={{ color: "#ed695a" }}>출발 </span>
-        )}
-        위치 변경
-      </div>
     </div>
   );
 }
