@@ -11,6 +11,7 @@ export default function MapContainer({
   linePosition,
   getAddress,
   isStart,
+  currentLocation,
 }) {
   useEffect(() => {
     drawPolyline();
@@ -33,6 +34,7 @@ export default function MapContainer({
   };
 
   function positionHandler(mouseEvent) {
+    console.log("얘는실행되면안됨");
     let obj = {
       lat: mouseEvent.latLng.getLat(),
       lng: mouseEvent.latLng.getLng(),
@@ -53,10 +55,7 @@ export default function MapContainer({
   return (
     <div className="mapContainer">
       <Map
-        center={{
-          lat: 37.604684142482995,
-          lng: 127.13980450970118,
-        }}
+        center={currentLocation}
         level={3}
         onClick={(_t, mouseEvent) => {
           positionHandler(mouseEvent);

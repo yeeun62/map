@@ -4,11 +4,8 @@ import axios from "axios";
 import "../style.css";
 
 export default function Insert({
-  startPosition,
-  endPosition,
   setStartPosition,
   setEndPosition,
-  drawPolyline,
   address,
   setAddress,
   naviResult,
@@ -17,10 +14,6 @@ export default function Insert({
 }) {
   const [open, setOpen] = useState({ boolean: false, point: null });
   const [isInsertOpen, setIsInsertOpen] = useState(true);
-
-  // useEffect(() => {
-  //   drawPolyline();
-  // }, [startPosition, endPosition]);
 
   const postCodeStyle = {
     display: "block",
@@ -33,8 +26,8 @@ export default function Insert({
   };
 
   async function handleComplete(data) {
+    setOpen({ ...open, boolean: false });
     try {
-      setOpen({ ...open, boolean: false });
       let getPosition = await axios.post(
         "http://localhost:80/position",
         { address: data.address },
@@ -74,52 +67,39 @@ export default function Insert({
                 value={address.start}
                 readOnly
               />
-            </label>
-            <label>
-              도착지 입력
-              <input
-                className="end"
-                placeholder="도착지를 입력해주세요"
-                name="end"
-                onFocus={() => setOpen({ boolean: true, point: "end" })}
-                value={address.end}
-                readOnly
-              />
-            </label>
-          </div>
-        </form>
-        <div className="pointButton" onClick={() => setIsStart(!isStart)}>
-          {isStart ? (
-            <span style={{ color: "#1ba5f5" }}>도착 </span>
-          ) : (
-            <span style={{ color: "#ed695a" }}>출발 </span>
-          )}
-          위치 변경
-        </div>
-        {open.boolean && (
-          <>
-            <p
-              className="closeModal"
-              onClick={() => setOpen({ ...open, boolean: false })}
-            >
-              X
-            </p>
-            <DaumPostcode
-              style={postCodeStyle}
-              onComplete={handleComplete}
-              autoClose
+          </label>
+          <label>
+            도착지 입력
+            <input
+              className="end"
+              placeholder="도착지를 입력해주세요"
+              name="end"
+              onFocus={() => setOpen({ boolean: true, point: "end" })}
+              value={address.end}
+              readOnly
             />
-          </>
-        )}
-        <div className="naviResult">
-          <div className="naviDuration">
-            <h2>시간</h2>
-            {naviResult.duration && <p>{naviResult.duration}</p>}
-          </div>
-          <div className="naviDistance">
-            <h2>거리</h2>
-            {naviResult.distance && <p>{naviResult.distance}</p>}
-          </div>
+          </label>
+        </div>
+      </form>
+      {open.boolean && (
+        <>
+          <p
+            className="closeModal"
+            onClick={() => setOpen({ ...open, boolean: false })}
+          >
+            X
+          </p>
+          <DaumPostcode style={postCodeStyle} onComplete={handleComplete} />
+        </>
+      )}
+      <div className="naviResult">
+        <div className="naviDuration">
+          <h2>시간</h2>
+          {naviResult.duration && <p>{naviResult.duration}</p>}
+        </div>
+        <div className="naviDistance">
+          <h2>거리</h2>
+          {naviResult.distance && <p>{naviResult.distance}</p>}
         </div>
       </div>
       <div

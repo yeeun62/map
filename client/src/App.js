@@ -1,22 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MapContainer from "./components/Map";
 import Insert from "./components/Insert";
 import axios from "axios";
 import "./App.css";
 
 function App() {
-  const [startPosition, setStartPosition] = useState({
-    lat: 37.603684142482995,
-    lng: 127.13980450970118,
-  });
-  const [endPosition, setEndPosition] = useState({
-    lat: 37.604684142482995,
-    lng: 127.13980450970118,
-  });
+  const [startPosition, setStartPosition] = useState(null);
+  const [endPosition, setEndPosition] = useState(null);
   const [linePosition, setLinePosition] = useState(null);
+  const [currentLocation, setCurrentLocation] = useState(null);
   const [address, setAddress] = useState({ start: "", end: "" });
   const [isStart, setIsStart] = useState(false);
   const [naviResult, setNaviResult] = useState({ duration: "", distance: "" });
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setStartPosition({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setEndPosition({
+          lat: position.coords.latitude + 0.001,
+          lng: position.coords.longitude,
+        });
+        setCurrentLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+    } else {
+      console.log("GPS를 지원하지 않습니다");
+    }
+  }, []);
 
   async function drawPolyline() {
     if (startPosition && endPosition) {
@@ -57,28 +73,35 @@ function App() {
 
   return (
     <div className="App">
-      <MapContainer
-        startPosition={startPosition}
-        setStartPosition={setStartPosition}
-        endPosition={endPosition}
-        setEndPosition={setEndPosition}
-        drawPolyline={drawPolyline}
-        linePosition={linePosition}
-        getAddress={getAddress}
-        isStart={isStart}
-      />
-      <Insert
-        startPosition={startPosition}
-        endPosition={endPosition}
-        setStartPosition={setStartPosition}
-        setEndPosition={setEndPosition}
-        drawPolyline={drawPolyline}
-        address={address}
-        setAddress={setAddress}
-        naviResult={naviResult}
-        isStart={isStart}
-        setIsStart={setIsStart}
-      />
+      {startPosition && endPosition && currentLocation ? (
+        <>
+          <MapContainer
+            startPosition={startPosition}
+            setStartPosition={setStartPosition}
+            endPosition={endPosition}
+            setEndPosition={setEndPosition}
+            drawPolyline={drawPolyline}
+            linePosition={linePosition}
+            getAddress={getAddress}
+            isStart={isStart}
+            currentLocation={currentLocation}
+          />
+          <Insert
+            startPosition={startPosition}
+            endPosition={endPosition}
+            setStartPosition={setStartPosition}
+            setEndPosition={setEndPosition}
+            drawPolyline={drawPolyline}
+            address={address}
+            setAddress={setAddress}
+            naviResult={naviResult}
+            isStart={isStart}
+            setIsStart={setIsStart}
+          />
+        </>
+      ) : (
+        <p>불러오는즁</p>
+      )}
     </div>
   );
 }
