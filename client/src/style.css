@@ -3,7 +3,7 @@
 }
 
 .mapComponent {
-  width: 80%;
+  width: 100%;
   height: 100vh;
   position: absolute;
   right: 0;
@@ -27,6 +27,10 @@
 }
 
 /* 👇아래로 insert /// 👆위로 map -------------------------------------------------- */
+
+.sidebar {
+  height: 100vh;
+}
 
 .insertWrapper {
   min-width: 25rem;
@@ -108,4 +112,18 @@
   background: #fff;
   font-size: 1.5rem;
   z-index: 500;
+}
+
+.isInsertOpen {
+  cursor: pointer;
+  background: #258fff;
+  width: 30px;
+  height: 40px;
+  line-height: 40px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+  z-index: 2100;
+  position: absolute;
+  top: 40%;
 }

@@ -66,7 +66,6 @@ function App() {
         linePosition={linePosition}
         getAddress={getAddress}
         isStart={isStart}
-        setIsStart={setIsStart}
       />
       <Insert
         startPosition={startPosition}
@@ -77,6 +76,8 @@ function App() {
         address={address}
         setAddress={setAddress}
         naviResult={naviResult}
+        isStart={isStart}
+        setIsStart={setIsStart}
       />
     </div>
   );
