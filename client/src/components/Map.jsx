@@ -35,7 +35,6 @@ export default function MapContainer({
   };
 
   function positionHandler(mouseEvent) {
-    console.log("얘는실행되면안됨");
     let obj = {
       lat: mouseEvent.latLng.getLat(),
       lng: mouseEvent.latLng.getLng(),
