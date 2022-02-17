@@ -4,20 +4,13 @@ import axios from "axios";
 import "../style.css";
 
 export default function Insert({
-  startPosition,
-  endPosition,
   setStartPosition,
   setEndPosition,
-  drawPolyline,
   address,
   setAddress,
   naviResult,
 }) {
   const [open, setOpen] = useState({ boolean: false, point: null });
-
-  // useEffect(() => {
-  //   drawPolyline();
-  // }, [startPosition, endPosition]);
 
   const postCodeStyle = {
     display: "block",
@@ -30,8 +23,8 @@ export default function Insert({
   };
 
   async function handleComplete(data) {
+    setOpen({ ...open, boolean: false });
     try {
-      setOpen({ ...open, boolean: false });
       let getPosition = await axios.post(
         "http://localhost:80/position",
         { address: data.address },
@@ -89,13 +82,9 @@ export default function Insert({
           >
             X
           </p>
-          <DaumPostcode
-            style={postCodeStyle}
-            onComplete={handleComplete}
-            autoClose
-          />
+          <DaumPostcode style={postCodeStyle} onComplete={handleComplete} />
         </>
-      ) : null}
+      )}
       <div className="naviResult">
         <div className="naviDuration">
           <h2>시간</h2>
