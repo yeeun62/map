@@ -1,42 +1,68 @@
 import React, { useState, useEffect } from "react";
 import DaumPostcode from "react-daum-postcode";
 import axios from "axios";
-import "../style.css";
+import "../css/insert.css";
 
 export default function Insert({
+  startPosition,
+  endPosition,
   setStartPosition,
   setEndPosition,
   address,
   setAddress,
   naviResult,
-  isStart,
-  setIsStart,
+  point,
+  setPoint,
+  drawPolyline,
+  setNaviOption,
+  naviOption,
+  wayPoint,
+  setWayPoint,
 }) {
-  const [open, setOpen] = useState({ boolean: false, point: null });
+  const [postCodeOpen, setPostCodeOpen] = useState({
+    boolean: false,
+    point: null,
+  });
   const [isInsertOpen, setIsInsertOpen] = useState(true);
+  const [naviList, setNaviList] = useState(false);
+  const [naviOptionName, setNaviOptionName] = useState("추천경로");
+  const [wayPointCount, setWayPointCount] = useState([]);
+
+  useEffect(() => {
+    drawPolyline();
+  }, [naviOption]);
 
   const postCodeStyle = {
     display: "block",
     position: "absolute",
-    top: "10%",
+    top: "6.8%",
     right: "-400px",
     width: "400px",
-    height: "500px",
-    zIndex: 300,
+    height: "470px",
+    zIndex: 1,
+    border: "1px solid #999",
+  };
+
+  const findWay = () => {
+    if (startPosition && endPosition) {
+      drawPolyline();
+    } else {
+      alert("출발지와 도착지를 선택해주세요!");
+    }
   };
 
   async function handleComplete(data) {
-    setOpen({ ...open, boolean: false });
+    setPostCodeOpen({ ...postCodeOpen, boolean: false });
     try {
       let getPosition = await axios.post(
         "http://localhost:80/position",
         { address: data.address },
         { withCredentials: true }
       );
-      if (open.point === "start") {
+      if (postCodeOpen.point === "start") {
         setAddress({ ...address, start: data.address });
         setStartPosition(getPosition.data.data);
-      } else if (open.point === "end") {
+      } else if (postCodeOpen.point === "end") {
         setAddress({ ...address, end: data.address });
         setEndPosition(getPosition.data.data);
       }
@@ -51,79 +77,207 @@ export default function Insert({
         className="insertWrapper"
         style={isInsertOpen ? { display: "block" } : { display: "none" }}
       >
-        <form className="insertForm" onSubmit={(e) => e.preventDefault()}>
-          <div className="formHeader">
-            <h1 className="insertTitle logo">handle</h1>
-          </div>
-          <div className="inputContainer">
+        <div className="insertTop">
+          <h2 className="logo">handle</h2>
+          <form className="insertForm" onSubmit={(e) => e.preventDefault()}>
             <label>
-              출발지 입력
+              <span>출발지 입력</span>
               <input
-                className="start"
                 placeholder="출발지를 입력해주세요"
-                name="start"
-                onFocus={() => setOpen({ boolean: true, point: "start" })}
+                onFocus={() =>
+                  setPostCodeOpen({ boolean: true, point: "start" })
+                }
                 value={address.start}
                 readOnly
               />
+              <button
+                className="positionBtn"
+                style={
+                  point === "start"
+                    ? { background: "#fe7364", color: "#fff" }
+                    : { background: "none", color: "#fe7364" }
+                }
+                onClick={() => setPoint("start")}
+              >
+                출
+              </button>
             </label>
+            {wayPointCount &&
+              wayPointCount.map((el, i) => {
+                return (
+                  <label key={el}>
+                    <span>경유지 입력</span>
+                    <input
+                      placeholder="경유지를 입력해주세요"
+                      onFocus={() =>
+                        setPostCodeOpen({ boolean: true, point: "end" })
+                      }
+                      // value={address.end}
+                      readOnly
+                    />
+                    <button
+                      className="subTractWayPoint"
+                      onClick={() => {
+                        let countArr = [...wayPointCount];
+                        countArr.splice(i, 1);
+                        setWayPointCount(countArr);
+                      }}
+                    >
+                      -
+                    </button>
+                    <button
+                      className="positionBtn"
+                      style={
+                        point === "waypoint"
+                          ? { background: "#fffd6a", color: "#fff" }
+                          : { background: "none", color: "#fffd6a" }
+                      }
+                      onClick={() => setWayPoint(el)}
+                    >
+                      경
+                    </button>
+                  </label>
+                );
+              })}
             <label>
-              도착지 입력
+              <span>도착지 입력</span>
               <input
-                className="end"
                 placeholder="도착지를 입력해주세요"
-                name="end"
-                onFocus={() => setOpen({ boolean: true, point: "end" })}
+                onFocus={() => setPostCodeOpen({ boolean: true, point: "end" })}
                 value={address.end}
                 readOnly
               />
+              <button
+                className="positionBtn"
+                style={
+                  point === "end"
+                    ? { background: "#385cfb", color: "#fff" }
+                    : { background: "none", color: "#385cfb" }
+                }
+                onClick={() => setPoint("end")}
+              >
+                도
+              </button>
             </label>
-          </div>
-        </form>
-        <div className="pointButton" onClick={() => setIsStart(!isStart)}>
-          지도에서
-          {isStart ? (
-            <span style={{ color: "#1ba5f5" }}> 도착 </span>
-          ) : (
-            <span style={{ color: "#ed695a" }}> 출발 </span>
-          )}
-          위치 변경
+            <div className="insertFormBtn">
+              <button
+                className="addWaypointBtn"
+                onClick={() => {
+                  if (wayPointCount.length < 5) {
+                    let countArr = [...wayPointCount];
+                    let counter;
+                    wayPointCount.length
+                      ? (counter = countArr.slice(-1)[0])
+                      : (counter = 0);
+                    counter += 1;
+                    countArr.push(counter);
+                    setWayPointCount(countArr);
+                  } else {
+                    alert("경유지는 5개까지 가능합니다!");
+                  }
+                }}
+              >
+                + 경유지
+              </button>
+              <button className="findWayBtn" onClick={findWay}>
+                길찾기
+              </button>
+            </div>
+          </form>
         </div>
-        {open.boolean && (
-          <>
-            <p
-              className="closeModal"
-              onClick={() => setOpen({ ...open, boolean: false })}
-            >
-              X
-            </p>
-            <DaumPostcode style={postCodeStyle} onComplete={handleComplete} />
-          </>
-        )}
-        <div className="naviResult">
-          <div className="naviDuration">
-            <h2>시간</h2>
-            {naviResult.duration && <p>{naviResult.duration}</p>}
-          </div>
-          <div className="naviDistance">
-            <h2>거리</h2>
-            {naviResult.distance && <p>{naviResult.distance}</p>}
-          </div>
+        <div className="insertBottom">
+          {naviResult ? (
+            <>
+              <div
+                className="naviChoice"
+                onClick={() => setNaviList(!naviList)}
+              >
+                <p>{naviOptionName}</p>
+                {naviList && (
+                  <ul className="naviList">
+                    <li>
+                      <a
+                        href="#"
+                        data-id="RECOMMEND"
+                        onClick={(e) => {
+                          setNaviOption(e.target.dataset.id);
+                          setNaviOptionName(e.target.outerText);
+                        }}
+                      >
+                        추천경로
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-id="TIME"
+                        onClick={(e) => {
+                          setNaviOption(e.target.dataset.id);
+                          setNaviOptionName(e.target.outerText);
+                        }}
+                      >
+                        최단시간
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-id="DISTANCE"
+                        onClick={(e) => {
+                          setNaviOption(e.target.dataset.id);
+                          setNaviOptionName(e.target.outerText);
+                        }}
+                      >
+                        최단경로
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-id="motorway"
+                        onClick={(e) => {
+                          setNaviOption(e.target.dataset.id);
+                          setNaviOptionName(e.target.outerText);
+                        }}
+                      >
+                        자동차전용도로
+                      </a>
+                    </li>
+                  </ul>
+                )}
+              </div>
+              <div className="naviInfo">
+                <p className="duration">{naviResult.duration}</p>
+                <p className="distance">{naviResult.distance}</p>
+              </div>
+            </>
+          ) : (
+            <div className="naviResultBefore">
+              <p>🚗</p>어디로 떠나볼까요
+            </div>
+          )}
         </div>
       </div>
-      <div
-        className="isInsertOpen"
+      <button
+        className="insertBtn"
         style={
-          isInsertOpen
-            ? open.boolean
-              ? { display: "none" }
-              : { display: "block", left: "25rem" }
-            : { left: "0" }
+          isInsertOpen ? { display: "block", left: "25rem" } : { left: "0" }
         }
         onClick={() => setIsInsertOpen(!isInsertOpen)}
       >
         {isInsertOpen ? "<" : ">"}
-      </div>
+      </button>
+      {postCodeOpen.boolean && (
+        <>
+          <button
+            className="closeModalBtn"
+            onClick={() => setPostCodeOpen({ ...postCodeOpen, boolean: false })}
+          >
+            X
+          </button>
+          <DaumPostcode style={postCodeStyle} onComplete={handleComplete} />
+        </>
+      )}
     </div>
   );
 }

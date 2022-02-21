@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Map, MapMarker, Polyline, ZoomControl } from "react-kakao-maps-sdk";
-import "../style.css";
 
 export default function MapContainer({
   startPosition,
@@ -10,8 +9,10 @@ export default function MapContainer({
   drawPolyline,
   linePosition,
   getAddress,
-  isStart,
   currentLocation,
+  point,
+  wayPoint,
+  setWayPoint,
 }) {
   useEffect(() => {
     drawPolyline();
@@ -34,36 +35,38 @@ export default function MapContainer({
   };
 
   function positionHandler(mouseEvent) {
-    let obj = {
+    let position = {
       lat: mouseEvent.latLng.getLat(),
       lng: mouseEvent.latLng.getLng(),
     };
-    if (isStart) {
+    if (point === "start") {
       getAddress(
         mouseEvent.latLng.getLng(),
         mouseEvent.latLng.getLat(),
         "start"
       );
-      setStartPosition(obj);
-    } else {
+      setStartPosition(position);
+    } else if (point === "end") {
       getAddress(mouseEvent.latLng.getLng(), mouseEvent.latLng.getLat(), "end");
-      setEndPosition(obj);
+      setEndPosition(position);
     }
   }
 
   return (
-    <div className="mapContainer">
+    <div>
       <Map
         center={currentLocation}
         level={3}
         onClick={(_t, mouseEvent) => {
           positionHandler(mouseEvent);
         }}
-        className="mapComponent"
+        style={{ width: "100%", height: "100vh" }}
       >
-        <ZoomControl position={kakao.maps.ControlPosition.TOPRIGHT} />
-        <MapMarker position={startPosition} image={startImage} />
-        <MapMarker position={endPosition} image={endImage} />
+        <ZoomControl position={{ right: 10, top: 10 }} />
+        {startPosition && (
+          <MapMarker position={startPosition} image={startImage} />
+        )}
+        {endPosition && <MapMarker position={endPosition} image={endImage} />}
         {linePosition && (
           <Polyline
             path={linePosition}
