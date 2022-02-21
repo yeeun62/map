@@ -37,7 +37,7 @@ function App() {
         priority = "RECOMMEND";
       }
       let route = await axios.post(
-        "http://localhost:80/navi",
+        `${process.env.REACT_APP_API_URL}/navi`,
         {
           start: `${startPosition.lng},${startPosition.lat}`,
           end: `${endPosition.lng},${endPosition.lat}`,
@@ -58,7 +58,7 @@ function App() {
   async function getAddress(lng, lat, point) {
     if (lng && lat) {
       let address = await axios.post(
-        "http://localhost:80/coord",
+        `${process.env.REACT_APP_API_URL}/navi/coord`,
         {
           lng,
           lat,
