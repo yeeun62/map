@@ -55,7 +55,7 @@ export default function Insert({
     setPostCodeOpen({ ...postCodeOpen, boolean: false });
     try {
       let getPosition = await axios.post(
-        `${process.env.REACT_APP_API_URL}/navi/position`,
+        `${process.env.REACT_APP_API_URL}/v1/navi/position`,
         { address: data.address },
         { withCredentials: true }
       );
