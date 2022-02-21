@@ -1,0 +1,177 @@
+.sidebar {
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  z-index: 1000;
+}
+
+.insertWrapper {
+  width: 25rem;
+  height: 100%;
+  box-shadow: 2px 5px 10px #999;
+  position: relative;
+  background: #fff;
+}
+
+.insertTop {
+  background: #00adc7;
+  color: #fff;
+  font-weight: 500;
+  padding: 1rem 1.2rem;
+}
+
+.logo {
+  color: #e0de1b;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.insertForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.insertForm label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 2.4rem;
+}
+
+.insertForm label input {
+  margin-right: 7px;
+  width: 60%;
+  height: 1.8rem;
+}
+
+.positionBtn {
+  width: 1.8rem;
+  height: 1.8rem;
+  line-height: 1.7rem;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.subTractWayPoint {
+  position: absolute;
+  left: 76%;
+  height: 1.2rem;
+  width: 1.2rem;
+  border-radius: 50%;
+  border: 1px solid #aaa;
+  font-size: 1.2rem;
+  line-height: 0rem;
+}
+
+.insertFormBtn {
+  display: flex;
+}
+
+.insertFormBtn button {
+  width: 5rem;
+  padding: 0.3rem;
+  font-weight: bold;
+  border-radius: 0.2rem;
+  margin-top: 0.8rem;
+}
+
+.addWaypointBtn {
+  background: #fff;
+  color: #00adc7;
+}
+
+.findWayBtn {
+  margin-left: 0.8rem;
+  background-color: #2f92a1;
+  color: #fff;
+}
+
+.naviChoice {
+  cursor: pointer;
+  position: relative;
+  border-left: 1px solid #bbb;
+  border-right: 1px solid #bbb;
+  width: 6rem;
+  padding: 0.5rem;
+  color: #00adc7;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.naviList {
+  position: absolute;
+  top: 88%;
+  left: 24%;
+  width: 6.2rem;
+  text-align: left;
+  background-color: #fff;
+  box-shadow: 0px 0px 4px #aaa;
+}
+
+.naviList li {
+  cursor: pointer;
+  padding: 0.4rem;
+  color: #777;
+}
+
+.naviList li:hover {
+  background-color: #eee;
+}
+
+.naviList a {
+  display: block;
+  width: 100%;
+}
+
+/* .naviChoice a::after {
+  display: inline-block;
+  content: "";
+  width: 14px;
+  height: 14px;
+} */
+
+.naviInfo {
+  border-bottom: 1px solid #bbb;
+  border-top: 1px solid #bbb;
+  display: flex;
+  align-items: center;
+  padding: 1.2rem;
+}
+
+.duration {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-right: 0.4rem;
+}
+
+.distance {
+  font-size: 0.8rem;
+}
+
+.naviResultBefore {
+  margin-top: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.closeModalBtn {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 3.5%;
+  right: -30px;
+  font-size: 1.2rem;
+  border: 1px solid #999;
+  border-bottom: none;
+}
+
+.insertBtn {
+  background: #00adc7;
+  padding: 0.6rem;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.3rem;
+  position: absolute;
+  top: 40%;
+}
