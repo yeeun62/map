@@ -5,25 +5,19 @@ import axios from "axios";
 import "./App.css";
 
 function App() {
-  const [startPosition, setStartPosition] = useState(null);
-  const [endPosition, setEndPosition] = useState(null);
-  const [linePosition, setLinePosition] = useState(null);
-  const [currentLocation, setCurrentLocation] = useState(null);
-  const [address, setAddress] = useState({ start: "", end: "" });
-  const [isStart, setIsStart] = useState(false);
-  const [naviResult, setNaviResult] = useState({ duration: "", distance: "" });
+  const [startPosition, setStartPosition] = useState(null); // 출발지 경위도
+  const [endPosition, setEndPosition] = useState(null); // 도착지 경위도
+  const [linePosition, setLinePosition] = useState(null); // polyline 경위도 배열
+  const [currentLocation, setCurrentLocation] = useState(null); // gps로 현재위치 받아옴
+  const [address, setAddress] = useState({ start: "", end: "" }); // 출발지, 도착지 주소
+  const [naviResult, setNaviResult] = useState(null);
+  const [point, setPoint] = useState(null); // 출발지를 변경할 것인지 도착지를 변경할것인지
+  const [wayPoint, setWayPoint] = useState(null);
+  const [naviOption, setNaviOption] = useState("RECOMMEND");
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        setStartPosition({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-        setEndPosition({
-          lat: position.coords.latitude + 0.001,
-          lng: position.coords.longitude,
-        });
         setCurrentLocation({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
@@ -36,11 +30,19 @@ function App() {
 
   async function drawPolyline() {
     if (startPosition && endPosition) {
+      let avoid = null;
+      let priority = naviOption;
+      if (naviOption === "motorway") {
+        avoid = "motorway";
+        priority = "RECOMMEND";
+      }
       let route = await axios.post(
         "http://localhost:80/navi",
         {
           start: `${startPosition.lng},${startPosition.lat}`,
           end: `${endPosition.lng},${endPosition.lat}`,
+          priority,
+          avoid,
         },
         { withCredentials: true }
       );
@@ -65,7 +67,7 @@ function App() {
       );
       if (point === "start") {
         setAddress({ ...address, start: address.data.address });
-      } else {
+      } else if (point === "end") {
         setAddress({ ...address, end: address.data.address });
       }
     }
@@ -73,8 +75,24 @@ function App() {
 
   return (
     <div className="App">
-      {startPosition && endPosition && currentLocation ? (
+      {currentLocation ? (
         <>
+          <Insert
+            startPosition={startPosition}
+            endPosition={endPosition}
+            setStartPosition={setStartPosition}
+            setEndPosition={setEndPosition}
+            address={address}
+            setAddress={setAddress}
+            naviResult={naviResult}
+            point={point}
+            setPoint={setPoint}
+            drawPolyline={drawPolyline}
+            naviOption={naviOption}
+            setNaviOption={setNaviOption}
+            wayPoint={wayPoint}
+            setWayPoint={setWayPoint}
+          />
           <MapContainer
             startPosition={startPosition}
             setStartPosition={setStartPosition}
@@ -83,24 +101,14 @@ function App() {
             drawPolyline={drawPolyline}
             linePosition={linePosition}
             getAddress={getAddress}
-            isStart={isStart}
             currentLocation={currentLocation}
-          />
-          <Insert
-            startPosition={startPosition}
-            endPosition={endPosition}
-            setStartPosition={setStartPosition}
-            setEndPosition={setEndPosition}
-            drawPolyline={drawPolyline}
-            address={address}
-            setAddress={setAddress}
-            naviResult={naviResult}
-            isStart={isStart}
-            setIsStart={setIsStart}
+            point={point}
+            wayPoint={wayPoint}
+            setWayPoint={setWayPoint}
           />
         </>
       ) : (
-        <p>불러오는즁</p>
+        <p>현재위치를 불러오는중 입니다.</p>
       )}
     </div>
   );
