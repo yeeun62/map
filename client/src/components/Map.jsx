@@ -49,6 +49,8 @@ export default function MapContainer({
     } else if (point === "end") {
       getAddress(mouseEvent.latLng.getLng(), mouseEvent.latLng.getLat(), "end");
       setEndPosition(position);
+    } else if (point === null) {
+      return;
     } else {
       getAddress(mouseEvent.latLng.getLng(), mouseEvent.latLng.getLat(), point);
       setWayPointPosition({ ...wayPointPosition, [point]: position });

@@ -230,7 +230,7 @@ export default function Insert({
                   <img
                     src={naviList ? "./up-arrow.png" : "./down-arrow.png"}
                     alt="화살표"
-                    style={{ width: "1.2rem", height: "0.8rem" }}
+                    style={{ width: "1.2rem", verticalAlign: "middle" }}
                   />
                 </p>
                 {naviList && (
