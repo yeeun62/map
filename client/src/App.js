@@ -7,13 +7,27 @@ import "./App.css";
 function App() {
   const [startPosition, setStartPosition] = useState(null); // 출발지 경위도
   const [endPosition, setEndPosition] = useState(null); // 도착지 경위도
+  const [wayPointPosition, setWayPointPosition] = useState({
+    one: false,
+    two: false,
+    three: false,
+    four: false,
+    five: false,
+  }); // 경유지 경위도
+  const [address, setAddress] = useState({
+    start: "",
+    one: "",
+    two: "",
+    three: "",
+    four: "",
+    five: "",
+    end: "",
+  }); // 출발지, 도착지, 경유지 주소
   const [linePosition, setLinePosition] = useState(null); // polyline 경위도 배열
   const [currentLocation, setCurrentLocation] = useState(null); // gps로 현재위치 받아옴
-  const [address, setAddress] = useState({ start: "", end: "" }); // 출발지, 도착지 주소
   const [naviResult, setNaviResult] = useState(null);
-  const [point, setPoint] = useState(null); // 출발지를 변경할 것인지 도착지를 변경할것인지
-  const [wayPoint, setWayPoint] = useState(null);
-  const [naviOption, setNaviOption] = useState("RECOMMEND");
+  const [point, setPoint] = useState(null); // 출발지 도착지 경유지중 어떤것을 변경할것인지
+  const [naviOption, setNaviOption] = useState("RECOMMEND"); // 네비옵션
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -36,19 +50,30 @@ function App() {
         avoid = "motorway";
         priority = "RECOMMEND";
       }
+      let wayPoint = "&waypoints=";
+      for (let key in wayPointPosition) {
+        if (wayPointPosition[key] && wayPoint.length === 11) {
+          wayPoint += `${wayPointPosition[key].lng},${wayPointPosition[key].lat}`;
+        } else if (wayPointPosition[key] && wayPoint.length !== 11) {
+          wayPoint += `|${wayPointPosition[key].lng},${wayPointPosition[key].lat}`;
+        }
+      }
       let route = await axios.post(
         `${process.env.REACT_APP_API_URL}/v1/navi`,
         {
           start: `${startPosition.lng},${startPosition.lat}`,
           end: `${endPosition.lng},${endPosition.lat}`,
+          wayPoint,
           priority,
           avoid,
         },
         { withCredentials: true }
       );
-      let linePosition = route.data.data.routes[0].sections[0].guides;
-      let linePositionList = linePosition.map((el) => {
-        return { lat: el.y, lng: el.x };
+      let linePosition = route.data.data.routes[0].sections.map(
+        (el) => el.guides
+      );
+      let linePositionList = linePosition.flat().map((el) => {
+        return { lng: el.x, lat: el.y };
       });
       setNaviResult(route.data.route);
       setLinePosition(linePositionList);
@@ -57,7 +82,7 @@ function App() {
 
   async function getAddress(lng, lat, point) {
     if (lng && lat) {
-      let address = await axios.post(
+      let findAddress = await axios.post(
         `${process.env.REACT_APP_API_URL}/v1/navi/coord`,
         {
           lng,
@@ -65,11 +90,7 @@ function App() {
         },
         { withCredentials: true }
       );
-      if (point === "start") {
-        setAddress({ ...address, start: address.data.address });
-      } else if (point === "end") {
-        setAddress({ ...address, end: address.data.address });
-      }
+      setAddress({ ...address, [point]: findAddress.data.address });
     }
   }
 
@@ -90,8 +111,8 @@ function App() {
             drawPolyline={drawPolyline}
             naviOption={naviOption}
             setNaviOption={setNaviOption}
-            wayPoint={wayPoint}
-            setWayPoint={setWayPoint}
+            wayPointPosition={wayPointPosition}
+            setWayPointPosition={setWayPointPosition}
           />
           <MapContainer
             startPosition={startPosition}
@@ -103,8 +124,8 @@ function App() {
             getAddress={getAddress}
             currentLocation={currentLocation}
             point={point}
-            wayPoint={wayPoint}
-            setWayPoint={setWayPoint}
+            wayPointPosition={wayPointPosition}
+            setWayPointPosition={setWayPointPosition}
           />
         </>
       ) : (

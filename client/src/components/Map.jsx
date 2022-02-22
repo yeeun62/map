@@ -11,12 +11,12 @@ export default function MapContainer({
   getAddress,
   currentLocation,
   point,
-  wayPoint,
-  setWayPoint,
+  wayPointPosition,
+  setWayPointPosition,
 }) {
   useEffect(() => {
     drawPolyline();
-  }, [startPosition, endPosition]);
+  }, [startPosition, endPosition, wayPointPosition]);
 
   const startImage = {
     src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/red_b.png",
@@ -36,8 +36,8 @@ export default function MapContainer({
 
   function positionHandler(mouseEvent) {
     let position = {
-      lat: mouseEvent.latLng.getLat(),
-      lng: mouseEvent.latLng.getLng(),
+      lat: String(mouseEvent.latLng.getLat()),
+      lng: String(mouseEvent.latLng.getLng()),
     };
     if (point === "start") {
       getAddress(
@@ -49,6 +49,9 @@ export default function MapContainer({
     } else if (point === "end") {
       getAddress(mouseEvent.latLng.getLng(), mouseEvent.latLng.getLat(), "end");
       setEndPosition(position);
+    } else {
+      getAddress(mouseEvent.latLng.getLng(), mouseEvent.latLng.getLat(), point);
+      setWayPointPosition({ ...wayPointPosition, [point]: position });
     }
   }
 
@@ -67,6 +70,17 @@ export default function MapContainer({
           <MapMarker position={startPosition} image={startImage} />
         )}
         {endPosition && <MapMarker position={endPosition} image={endImage} />}
+        {wayPointPosition.one && <MapMarker position={wayPointPosition.one} />}
+        {wayPointPosition.two && <MapMarker position={wayPointPosition.two} />}
+        {wayPointPosition.three && (
+          <MapMarker position={wayPointPosition.three} />
+        )}
+        {wayPointPosition.four && (
+          <MapMarker position={wayPointPosition.four} />
+        )}
+        {wayPointPosition.five && (
+          <MapMarker position={wayPointPosition.five} />
+        )}
         {linePosition && (
           <Polyline
             path={linePosition}
