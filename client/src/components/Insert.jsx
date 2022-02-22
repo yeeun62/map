@@ -16,8 +16,8 @@ export default function Insert({
   drawPolyline,
   setNaviOption,
   naviOption,
-  wayPoint,
-  setWayPoint,
+  wayPointPosition,
+  setWayPointPosition,
 }) {
   const [postCodeOpen, setPostCodeOpen] = useState({
     boolean: false,
@@ -65,6 +65,12 @@ export default function Insert({
       } else if (postCodeOpen.point === "end") {
         setAddress({ ...address, end: data.address });
         setEndPosition(getPosition.data.data);
+      } else {
+        setAddress({ ...address, [postCodeOpen.point]: data.address });
+        setWayPointPosition({
+          ...wayPointPosition,
+          [postCodeOpen.point]: getPosition.data.data,
+        });
       }
     } catch (err) {
       console.log(err);
@@ -104,15 +110,33 @@ export default function Insert({
             </label>
             {wayPointCount &&
               wayPointCount.map((el, i) => {
+                let wayPointAddress;
+                let pointName;
+                if (el === 1) {
+                  wayPointAddress = address.one;
+                  pointName = "one";
+                } else if (el === 2) {
+                  wayPointAddress = address.two;
+                  pointName = "two";
+                } else if (el === 3) {
+                  wayPointAddress = address.three;
+                  pointName = "three";
+                } else if (el === 4) {
+                  wayPointAddress = address.four;
+                  pointName = "four";
+                } else if (el === 5) {
+                  wayPointAddress = address.five;
+                  pointName = "five";
+                }
                 return (
                   <label key={el}>
                     <span>경유지 입력</span>
                     <input
                       placeholder="경유지를 입력해주세요"
                       onFocus={() =>
-                        setPostCodeOpen({ boolean: true, point: "end" })
+                        setPostCodeOpen({ boolean: true, point: [pointName] })
                       }
-                      // value={address.end}
+                      value={wayPointAddress}
                       readOnly
                     />
                     <button
@@ -121,18 +145,27 @@ export default function Insert({
                         let countArr = [...wayPointCount];
                         countArr.splice(i, 1);
                         setWayPointCount(countArr);
+                        setWayPointPosition({
+                          ...wayPointPosition,
+                          [pointName]: false,
+                        });
+                        setAddress({ ...address, [pointName]: "" });
+                        setPoint(null);
                       }}
                     >
                       -
                     </button>
                     <button
                       className="positionBtn"
+                      name={pointName}
                       style={
-                        point === "waypoint"
-                          ? { background: "#fffd6a", color: "#fff" }
-                          : { background: "none", color: "#fffd6a" }
+                        point === pointName
+                          ? { background: "#ddda29", color: "#fff" }
+                          : { background: "none", color: "#ddda29" }
                       }
-                      onClick={() => setWayPoint(el)}
+                      onClick={(e) => {
+                        setPoint(e.target.name);
+                      }}
                     >
                       경
                     </button>
@@ -192,7 +225,14 @@ export default function Insert({
                 className="naviChoice"
                 onClick={() => setNaviList(!naviList)}
               >
-                <p>{naviOptionName}</p>
+                <p>
+                  {naviOptionName + " "}
+                  <img
+                    src={naviList ? "./up-arrow.png" : "./down-arrow.png"}
+                    alt="화살표"
+                    style={{ width: "1.2rem", height: "0.8rem" }}
+                  />
+                </p>
                 {naviList && (
                   <ul className="naviList">
                     <li>
