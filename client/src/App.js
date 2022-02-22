@@ -44,7 +44,7 @@ function App() {
 
   async function drawPolyline() {
     if (startPosition && endPosition) {
-      let avoid = null;
+      let avoid = "";
       let priority = naviOption;
       if (naviOption === "motorway") {
         avoid = "motorway";
