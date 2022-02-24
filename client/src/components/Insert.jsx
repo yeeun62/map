@@ -77,6 +77,61 @@ export default function Insert({
     }
   }
 
+  const changePosition = (num) => {
+    if (Number(num) === 1) {
+      setWayPointPosition({
+        1: wayPointPosition[2],
+        2: wayPointPosition[3],
+        3: wayPointPosition[4],
+        4: wayPointPosition[5],
+        5: false,
+      });
+      setAddress({
+        1: address[2],
+        2: address[3],
+        3: address[4],
+        4: address[5],
+        5: "",
+      });
+    } else if (Number(num) === 2) {
+      setWayPointPosition({
+        ...wayPointPosition,
+        2: wayPointPosition[3],
+        3: wayPointPosition[4],
+        4: wayPointPosition[5],
+        5: false,
+      });
+      setAddress({
+        ...address,
+        2: address[3],
+        3: address[4],
+        4: address[5],
+        5: "",
+      });
+    } else if (Number(num) === 3) {
+      setWayPointPosition({
+        ...wayPointPosition,
+        3: wayPointPosition[4],
+        4: wayPointPosition[5],
+        5: false,
+      });
+      setAddress({ ...address, 3: address[4], 4: address[5], 5: "" });
+    } else if (Number(num) === 4) {
+      setWayPointPosition({
+        ...wayPointPosition,
+        4: wayPointPosition[5],
+        5: false,
+      });
+      setAddress({ ...address, 4: address[5], 5: "" });
+    } else if (Number(num) === 5) {
+      setWayPointPosition({
+        ...wayPointPosition,
+        5: false,
+      });
+      setAddress({ ...address, 5: "" });
+    }
+  };
+
   return (
     <div className="sidebar">
       <div
@@ -110,61 +165,39 @@ export default function Insert({
             </label>
             {wayPointCount &&
               wayPointCount.map((el, i) => {
-                let wayPointAddress;
-                let pointName;
-                if (el === 1) {
-                  wayPointAddress = address.one;
-                  pointName = "one";
-                } else if (el === 2) {
-                  wayPointAddress = address.two;
-                  pointName = "two";
-                } else if (el === 3) {
-                  wayPointAddress = address.three;
-                  pointName = "three";
-                } else if (el === 4) {
-                  wayPointAddress = address.four;
-                  pointName = "four";
-                } else if (el === 5) {
-                  wayPointAddress = address.five;
-                  pointName = "five";
-                }
                 return (
                   <label key={el}>
                     <span>경유지 입력</span>
                     <input
                       placeholder="경유지를 입력해주세요"
                       onFocus={() =>
-                        setPostCodeOpen({ boolean: true, point: [pointName] })
+                        setPostCodeOpen({ boolean: true, point: el })
                       }
-                      value={wayPointAddress}
+                      value={address[el]}
                       readOnly
                     />
                     <button
                       className="subTractWayPoint"
                       onClick={() => {
                         let countArr = [...wayPointCount];
-                        countArr.splice(i, 1);
+                        countArr.pop();
                         setWayPointCount(countArr);
-                        setWayPointPosition({
-                          ...wayPointPosition,
-                          [pointName]: false,
-                        });
-                        setAddress({ ...address, [pointName]: "" });
                         setPoint(null);
+                        changePosition(el);
                       }}
                     >
                       -
                     </button>
                     <button
                       className="positionBtn"
-                      name={pointName}
+                      name={el}
                       style={
-                        point === pointName
+                        point === el
                           ? { background: "#ddda29", color: "#fff" }
                           : { background: "none", color: "#ddda29" }
                       }
                       onClick={(e) => {
-                        setPoint(e.target.name);
+                        setPoint(Number(e.target.name));
                       }}
                     >
                       경

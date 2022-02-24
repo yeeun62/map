@@ -8,19 +8,19 @@ function App() {
   const [startPosition, setStartPosition] = useState(null); // 출발지 경위도
   const [endPosition, setEndPosition] = useState(null); // 도착지 경위도
   const [wayPointPosition, setWayPointPosition] = useState({
-    one: false,
-    two: false,
-    three: false,
-    four: false,
-    five: false,
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+    5: false,
   }); // 경유지 경위도
   const [address, setAddress] = useState({
     start: "",
-    one: "",
-    two: "",
-    three: "",
-    four: "",
-    five: "",
+    1: "",
+    2: "",
+    3: "",
+    4: "",
+    5: "",
     end: "",
   }); // 출발지, 도착지, 경유지 주소
   const [linePosition, setLinePosition] = useState(null); // polyline 경위도 배열
