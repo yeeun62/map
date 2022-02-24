@@ -72,17 +72,11 @@ export default function MapContainer({
           <MapMarker position={startPosition} image={startImage} />
         )}
         {endPosition && <MapMarker position={endPosition} image={endImage} />}
-        {wayPointPosition.one && <MapMarker position={wayPointPosition.one} />}
-        {wayPointPosition.two && <MapMarker position={wayPointPosition.two} />}
-        {wayPointPosition.three && (
-          <MapMarker position={wayPointPosition.three} />
-        )}
-        {wayPointPosition.four && (
-          <MapMarker position={wayPointPosition.four} />
-        )}
-        {wayPointPosition.five && (
-          <MapMarker position={wayPointPosition.five} />
-        )}
+        {wayPointPosition[1] && <MapMarker position={wayPointPosition[1]} />}
+        {wayPointPosition[2] && <MapMarker position={wayPointPosition[2]} />}
+        {wayPointPosition[3] && <MapMarker position={wayPointPosition[3]} />}
+        {wayPointPosition[4] && <MapMarker position={wayPointPosition[4]} />}
+        {wayPointPosition[5] && <MapMarker position={wayPointPosition[5]} />}
         {linePosition && (
           <Polyline
             path={linePosition}
