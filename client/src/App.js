@@ -58,25 +58,29 @@ function App() {
           wayPoint += `|${wayPointPosition[key].lng},${wayPointPosition[key].lat}`;
         }
       }
-      let route = await axios.post(
-        `${process.env.REACT_APP_API_URL}/v1/navi`,
-        {
-          start: `${startPosition.lng},${startPosition.lat}`,
-          end: `${endPosition.lng},${endPosition.lat}`,
-          wayPoint,
-          priority,
-          avoid,
-        },
-        { withCredentials: true }
-      );
-      let linePosition = route.data.data.routes[0].sections.map(
-        (el) => el.guides
-      );
-      let linePositionList = linePosition.flat().map((el) => {
-        return { lng: el.x, lat: el.y };
-      });
-      setNaviResult(route.data.route);
-      setLinePosition(linePositionList);
+      try {
+        let route = await axios.post(
+          `${process.env.REACT_APP_API_URL}/v1/navi`,
+          {
+            start: `${startPosition.lng},${startPosition.lat}`,
+            end: `${endPosition.lng},${endPosition.lat}`,
+            wayPoint,
+            priority,
+            avoid,
+          },
+          { withCredentials: true }
+        );
+        let linePosition = route.data.data.routes[0].sections.map(
+          (el) => el.guides
+        );
+        let linePositionList = linePosition.flat().map((el) => {
+          return { lng: el.x, lat: el.y };
+        });
+        setNaviResult(route.data.route);
+        setLinePosition(linePositionList);
+      } catch (err) {
+        alert(`${err.response.data.data.result_msg}`);
+      }
     }
   }
 

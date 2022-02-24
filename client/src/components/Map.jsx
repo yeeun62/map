@@ -22,7 +22,7 @@ export default function MapContainer({
     src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/red_b.png",
     size: [50, 45],
     options: {
-      offset: [15, 43],
+      offset: { x: 15, y: 43 },
     },
   };
 
@@ -30,7 +30,7 @@ export default function MapContainer({
     src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/blue_b.png",
     size: [50, 45],
     options: {
-      offset: [15, 43],
+      offset: { x: 15, y: 43 },
     },
   };
 
@@ -39,21 +39,17 @@ export default function MapContainer({
       lat: String(mouseEvent.latLng.getLat()),
       lng: String(mouseEvent.latLng.getLng()),
     };
-    if (point === "start") {
-      getAddress(
-        mouseEvent.latLng.getLng(),
-        mouseEvent.latLng.getLat(),
-        "start"
-      );
-      setStartPosition(position);
-    } else if (point === "end") {
-      getAddress(mouseEvent.latLng.getLng(), mouseEvent.latLng.getLat(), "end");
-      setEndPosition(position);
-    } else if (point === null) {
+    if (point === null) {
       return;
     } else {
       getAddress(mouseEvent.latLng.getLng(), mouseEvent.latLng.getLat(), point);
-      setWayPointPosition({ ...wayPointPosition, [point]: position });
+      if (point === "start") {
+        setStartPosition(position);
+      } else if (point === "end") {
+        setEndPosition(position);
+      } else {
+        setWayPointPosition({ ...wayPointPosition, [point]: position });
+      }
     }
   }
 
