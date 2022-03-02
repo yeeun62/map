@@ -77,60 +77,19 @@ export default function Insert({
     }
   }
 
-  const changePosition = (num) => {
-    if (Number(num) === 1) {
-      setWayPointPosition({
-        1: wayPointPosition[2],
-        2: wayPointPosition[3],
-        3: wayPointPosition[4],
-        4: wayPointPosition[5],
-        5: false,
-      });
-      setAddress({
-        1: address[2],
-        2: address[3],
-        3: address[4],
-        4: address[5],
-        5: "",
-      });
-    } else if (Number(num) === 2) {
-      setWayPointPosition({
-        ...wayPointPosition,
-        2: wayPointPosition[3],
-        3: wayPointPosition[4],
-        4: wayPointPosition[5],
-        5: false,
-      });
-      setAddress({
-        ...address,
-        2: address[3],
-        3: address[4],
-        4: address[5],
-        5: "",
-      });
-    } else if (Number(num) === 3) {
-      setWayPointPosition({
-        ...wayPointPosition,
-        3: wayPointPosition[4],
-        4: wayPointPosition[5],
-        5: false,
-      });
-      setAddress({ ...address, 3: address[4], 4: address[5], 5: "" });
-    } else if (Number(num) === 4) {
-      setWayPointPosition({
-        ...wayPointPosition,
-        4: wayPointPosition[5],
-        5: false,
-      });
-      setAddress({ ...address, 4: address[5], 5: "" });
-    } else if (Number(num) === 5) {
-      setWayPointPosition({
-        ...wayPointPosition,
-        5: false,
-      });
-      setAddress({ ...address, 5: "" });
+  function changePosition(num) {
+    for (let i = Number(num); i <= 4; i++) {
+      if (wayPointPosition[i]) {
+        wayPointPosition[i] = wayPointPosition[i + 1];
+        address[i] = address[i + 1];
+      }
     }
-  };
+    setWayPointPosition({ ...wayPointPosition, [5]: false });
+    setAddress({
+      ...address,
+      [5]: "",
+    });
+  }
 
   return (
     <div className="sidebar">
