@@ -14,8 +14,8 @@ export default function Insert({
   point,
   setPoint,
   drawPolyline,
-  setNaviOption,
   naviOption,
+  setNaviOption,
   wayPointPosition,
   setWayPointPosition,
 }) {
@@ -23,7 +23,7 @@ export default function Insert({
     boolean: false,
     point: null,
   });
-  const [isInsertOpen, setIsInsertOpen] = useState(true);
+  const [isInsertOpen, setIsInsertOpen] = useState(false);
   const [naviList, setNaviList] = useState(false);
   const [naviOptionName, setNaviOptionName] = useState("추천경로");
   const [wayPointCount, setWayPointCount] = useState([]);
