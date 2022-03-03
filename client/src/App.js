@@ -1,3 +1,4 @@
+import { BrowserRouter } from "react-router-dom";
 import { useState, useEffect } from "react";
 import MapContainer from "./components/Map";
 import Insert from "./components/Insert";
@@ -29,8 +30,26 @@ function App() {
   const [point, setPoint] = useState(null); // 출발지 도착지 경유지중 어떤것을 변경할것인지
   const [naviOption, setNaviOption] = useState("RECOMMEND"); // 네비옵션
 
+  const naviURL = decodeURI(window.location.href);
+  const searchParams = naviURL.split("?")[1];
+  const params = new URLSearchParams(searchParams);
+
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (searchParams) {
+      let start = params.get("출발지").split(",");
+      let end = params.get("도착지").split(",");
+      setStartPosition({ lng: start[0], lat: start[1] });
+      setEndPosition({ lng: end[0], lat: end[1] });
+      setCurrentLocation({ lng: start[0], lat: start[1] });
+      getAddress(
+        Number(start[0]),
+        Number(start[1]),
+        "start",
+        Number(end[0]),
+        Number(end[1]),
+        "end"
+      );
+    } else if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         setCurrentLocation({
           lat: position.coords.latitude,
@@ -84,58 +103,70 @@ function App() {
     }
   }
 
-  async function getAddress(lng, lat, point) {
-    if (lng && lat) {
+  async function getAddress(lng, lat, point, endlng, endlat) {
+    if (lng && lat && point) {
       let findAddress = await axios.post(
         `${process.env.REACT_APP_API_URL}/v1/navi/coord`,
         {
           lng,
           lat,
+          endlng,
+          endlat,
         },
         { withCredentials: true }
       );
-      setAddress({ ...address, [point]: findAddress.data.address });
+      if (findAddress.data.address2) {
+        setAddress({
+          ...address,
+          [point]: findAddress.data.address,
+          end: findAddress.data.address2,
+        });
+      } else {
+        setAddress({ ...address, [point]: findAddress.data.address });
+      }
     }
   }
 
   return (
-    <div className="App">
-      {currentLocation ? (
-        <>
-          <Insert
-            startPosition={startPosition}
-            endPosition={endPosition}
-            setStartPosition={setStartPosition}
-            setEndPosition={setEndPosition}
-            address={address}
-            setAddress={setAddress}
-            naviResult={naviResult}
-            point={point}
-            setPoint={setPoint}
-            drawPolyline={drawPolyline}
-            naviOption={naviOption}
-            setNaviOption={setNaviOption}
-            wayPointPosition={wayPointPosition}
-            setWayPointPosition={setWayPointPosition}
-          />
-          <MapContainer
-            startPosition={startPosition}
-            setStartPosition={setStartPosition}
-            endPosition={endPosition}
-            setEndPosition={setEndPosition}
-            drawPolyline={drawPolyline}
-            linePosition={linePosition}
-            getAddress={getAddress}
-            currentLocation={currentLocation}
-            point={point}
-            wayPointPosition={wayPointPosition}
-            setWayPointPosition={setWayPointPosition}
-          />
-        </>
-      ) : (
-        <p>현재위치를 불러오는중 입니다.</p>
-      )}
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        {currentLocation ? (
+          <>
+            <Insert
+              startPosition={startPosition}
+              endPosition={endPosition}
+              setStartPosition={setStartPosition}
+              setEndPosition={setEndPosition}
+              address={address}
+              setAddress={setAddress}
+              naviResult={naviResult}
+              point={point}
+              setPoint={setPoint}
+              drawPolyline={drawPolyline}
+              naviOption={naviOption}
+              setNaviOption={setNaviOption}
+              wayPointPosition={wayPointPosition}
+              setWayPointPosition={setWayPointPosition}
+            />
+            <MapContainer
+              startPosition={startPosition}
+              setStartPosition={setStartPosition}
+              endPosition={endPosition}
+              setEndPosition={setEndPosition}
+              drawPolyline={drawPolyline}
+              linePosition={linePosition}
+              getAddress={getAddress}
+              currentLocation={currentLocation}
+              point={point}
+              wayPointPosition={wayPointPosition}
+              setWayPointPosition={setWayPointPosition}
+            />
+          </>
+        ) : (
+          <p>현재위치를 불러오는중 입니다.</p>
+        )}
+      </div>
+    </BrowserRouter>
   );
 }
 
