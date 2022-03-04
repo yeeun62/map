@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Map, MapMarker, Polyline, ZoomControl } from "react-kakao-maps-sdk";
 
 export default function MapContainer({
@@ -14,8 +14,13 @@ export default function MapContainer({
   wayPointPosition,
   setWayPointPosition,
 }) {
+  const { kakao } = window;
+  const [map, setMap] = useState();
+
   useEffect(() => {
     drawPolyline();
+    if (map && startPosition && endPosition)
+      map.setBounds(bounds, 100, 50, 100, 400);
   }, [startPosition, endPosition, wayPointPosition]);
 
   const startImage = {
@@ -53,6 +58,19 @@ export default function MapContainer({
     }
   }
 
+  const bounds = useMemo(() => {
+    if (startPosition && endPosition) {
+      const bounds = new kakao.maps.LatLngBounds();
+      let points = [startPosition, endPosition];
+
+      points.forEach((point) => {
+        bounds.extend(new kakao.maps.LatLng(point.lat, point.lng));
+      });
+
+      return bounds;
+    }
+  }, [startPosition, endPosition, wayPointPosition]);
+
   return (
     <div>
       <Map
@@ -62,6 +80,7 @@ export default function MapContainer({
           positionHandler(mouseEvent);
         }}
         style={{ width: "100%", height: "100vh" }}
+        onCreate={setMap}
       >
         <ZoomControl position={{ right: 10, top: 10 }} />
         {startPosition && (
@@ -77,9 +96,9 @@ export default function MapContainer({
           <Polyline
             path={linePosition}
             strokeWeight={5}
-            strokeColor={"#ff23cf"}
+            strokeColor="#ff23cf"
             strokeOpacity={0.7}
-            strokeStyle={"solid"}
+            strokeStyle="solid"
           />
         )}
       </Map>

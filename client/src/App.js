@@ -40,7 +40,6 @@ function App() {
       let end = params.get("도착지").split(",");
       setStartPosition({ lng: start[0], lat: start[1] });
       setEndPosition({ lng: end[0], lat: end[1] });
-      setCurrentLocation({ lng: start[0], lat: start[1] });
       getAddress(
         Number(start[0]),
         Number(start[1]),
