@@ -13,9 +13,10 @@ export default function MapContainer({
   point,
   wayPointPosition,
   setWayPointPosition,
+  map,
+  setMap,
 }) {
   const { kakao } = window;
-  const [map, setMap] = useState();
 
   useEffect(() => {
     drawPolyline();

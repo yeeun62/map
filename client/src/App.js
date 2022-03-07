@@ -29,6 +29,7 @@ function App() {
   const [naviResult, setNaviResult] = useState(null);
   const [point, setPoint] = useState(null); // 출발지 도착지 경유지중 어떤것을 변경할것인지
   const [naviOption, setNaviOption] = useState("RECOMMEND"); // 네비옵션
+  const [map, setMap] = useState();
 
   const naviURL = decodeURI(window.location.href);
   const searchParams = naviURL.split("?")[1];
@@ -146,6 +147,7 @@ function App() {
               setNaviOption={setNaviOption}
               wayPointPosition={wayPointPosition}
               setWayPointPosition={setWayPointPosition}
+              map={map}
             />
             <MapContainer
               startPosition={startPosition}
@@ -159,6 +161,8 @@ function App() {
               point={point}
               wayPointPosition={wayPointPosition}
               setWayPointPosition={setWayPointPosition}
+              map={map}
+              setMap={setMap}
             />
           </>
         ) : (
