@@ -175,11 +175,12 @@ function App() {
               wayPointPosition={wayPointPosition}
               setWayPointPosition={setWayPointPosition}
               map={map}
+              bounds={bounds}
             />
             <MapContainer
               startPosition={startPosition}
-              setStartPosition={setStartPosition}
               endPosition={endPosition}
+              setStartPosition={setStartPosition}
               setEndPosition={setEndPosition}
               drawPolyline={drawPolyline}
               linePosition={linePosition}

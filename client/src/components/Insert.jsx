@@ -19,6 +19,7 @@ export default function Insert({
   wayPointPosition,
   setWayPointPosition,
   map,
+  bounds,
 }) {
   const [postCodeOpen, setPostCodeOpen] = useState({
     boolean: false,
@@ -52,20 +53,6 @@ export default function Insert({
       alert("출발지와 도착지를 선택해주세요!");
     }
   };
-  const { kakao } = window;
-
-  const bounds = useMemo(() => {
-    if (startPosition && endPosition) {
-      const bounds = new kakao.maps.LatLngBounds();
-      let points = [startPosition, endPosition];
-
-      points.forEach((point) => {
-        bounds.extend(new kakao.maps.LatLng(point.lat, point.lng));
-      });
-
-      return bounds;
-    }
-  }, [startPosition, endPosition, wayPointPosition]);
 
   async function handleComplete(data) {
     setPostCodeOpen({ ...postCodeOpen, boolean: false });

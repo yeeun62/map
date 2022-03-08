@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { Map, MapMarker, Polyline, ZoomControl } from "react-kakao-maps-sdk";
 
 export default function MapContainer({
   startPosition,
-  setStartPosition,
   endPosition,
+  setStartPosition,
   setEndPosition,
   drawPolyline,
   linePosition,
