@@ -1,5 +1,5 @@
 import { BrowserRouter } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import MapContainer from "./components/Map";
 import Insert from "./components/Insert";
 import axios from "axios";
@@ -25,14 +25,36 @@ function App() {
     end: "",
   }); // 출발지, 도착지, 경유지 주소
   const [linePosition, setLinePosition] = useState(null); // polyline 경위도 배열
-  const [currentLocation, setCurrentLocation] = useState(null); // gps로 현재위치 받아옴
+  const [currentLocation, setCurrentLocation] = useState({
+    lat: 37.5438597,
+    lng: 127.0544145,
+  }); // gps로 현재위치 받아옴
   const [naviResult, setNaviResult] = useState(null);
   const [point, setPoint] = useState(null); // 출발지 도착지 경유지중 어떤것을 변경할것인지
   const [naviOption, setNaviOption] = useState("RECOMMEND"); // 네비옵션
+  const [map, setMap] = useState();
 
   const naviURL = decodeURI(window.location.href);
   const searchParams = naviURL.split("?")[1];
   const params = new URLSearchParams(searchParams);
+
+  const { kakao } = window;
+
+  const bounds = useMemo(() => {
+    if (startPosition && endPosition) {
+      let points = [startPosition, endPosition];
+      Object.values(wayPointPosition).forEach((wp) => {
+        if (wp) {
+          points.push(wp);
+        }
+      });
+      const bounds = new kakao.maps.LatLngBounds();
+      points.forEach((point) => {
+        bounds.extend(new kakao.maps.LatLng(point.lat, point.lng));
+      });
+      return bounds;
+    }
+  }, [startPosition, endPosition, wayPointPosition]);
 
   useEffect(() => {
     if (searchParams) {
@@ -40,7 +62,6 @@ function App() {
       let end = params.get("도착지").split(",");
       setStartPosition({ lng: start[0], lat: start[1] });
       setEndPosition({ lng: end[0], lat: end[1] });
-      setCurrentLocation({ lng: start[0], lat: start[1] });
       getAddress(
         Number(start[0]),
         Number(start[1]),
@@ -60,6 +81,12 @@ function App() {
       console.log("GPS를 지원하지 않습니다");
     }
   }, []);
+
+  useEffect(() => {
+    if (map && startPosition && endPosition) {
+      map.setBounds(bounds, 100, 50, 100, 400);
+    }
+  }, [map]);
 
   async function drawPolyline() {
     if (startPosition && endPosition) {
@@ -147,6 +174,7 @@ function App() {
               setNaviOption={setNaviOption}
               wayPointPosition={wayPointPosition}
               setWayPointPosition={setWayPointPosition}
+              map={map}
             />
             <MapContainer
               startPosition={startPosition}
@@ -160,6 +188,9 @@ function App() {
               point={point}
               wayPointPosition={wayPointPosition}
               setWayPointPosition={setWayPointPosition}
+              map={map}
+              setMap={setMap}
+              bounds={bounds}
             />
           </>
         ) : (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import DaumPostcode from "react-daum-postcode";
 import axios from "axios";
 import "../css/insert.css";
@@ -18,6 +18,7 @@ export default function Insert({
   setNaviOption,
   wayPointPosition,
   setWayPointPosition,
+  map,
 }) {
   const [postCodeOpen, setPostCodeOpen] = useState({
     boolean: false,
@@ -46,10 +47,25 @@ export default function Insert({
   const findWay = () => {
     if (startPosition && endPosition) {
       drawPolyline();
+      map.setBounds(bounds, 100, 50, 100, 400);
     } else {
       alert("출발지와 도착지를 선택해주세요!");
     }
   };
+  const { kakao } = window;
+
+  const bounds = useMemo(() => {
+    if (startPosition && endPosition) {
+      const bounds = new kakao.maps.LatLngBounds();
+      let points = [startPosition, endPosition];
+
+      points.forEach((point) => {
+        bounds.extend(new kakao.maps.LatLng(point.lat, point.lng));
+      });
+
+      return bounds;
+    }
+  }, [startPosition, endPosition, wayPointPosition]);
 
   async function handleComplete(data) {
     setPostCodeOpen({ ...postCodeOpen, boolean: false });
