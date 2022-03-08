@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Map, MapMarker, Polyline, ZoomControl } from "react-kakao-maps-sdk";
 
 export default function MapContainer({
@@ -15,13 +15,13 @@ export default function MapContainer({
   setWayPointPosition,
   map,
   setMap,
+  bounds,
 }) {
-  const { kakao } = window;
-
   useEffect(() => {
     drawPolyline();
-    if (map && startPosition && endPosition)
+    if (map && startPosition && endPosition) {
       map.setBounds(bounds, 100, 50, 100, 400);
+    }
   }, [startPosition, endPosition, wayPointPosition]);
 
   const startImage = {
@@ -58,19 +58,6 @@ export default function MapContainer({
       }
     }
   }
-
-  const bounds = useMemo(() => {
-    if (startPosition && endPosition) {
-      const bounds = new kakao.maps.LatLngBounds();
-      let points = [startPosition, endPosition];
-
-      points.forEach((point) => {
-        bounds.extend(new kakao.maps.LatLng(point.lat, point.lng));
-      });
-
-      return bounds;
-    }
-  }, [startPosition, endPosition, wayPointPosition]);
 
   return (
     <div>
