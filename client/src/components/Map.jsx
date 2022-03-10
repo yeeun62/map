@@ -58,7 +58,7 @@ export default function MapContainer({
     <div>
       <Map
         center={currentLocation}
-        level={12}
+        level={currentLocation.lat === 36.602549 ? 12 : 6}
         onClick={(_t, mouseEvent) => {
           positionHandler(mouseEvent);
         }}

@@ -78,10 +78,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (map && startPosition && endPosition && linePosition) {
+    if (map && linePosition) {
       map.setBounds(bounds, 100, 50, 100, 400);
     }
-  }, [map, linePosition, startPosition, endPosition]);
+  }, [map, linePosition]);
 
   async function drawPolyline() {
     if (startPosition && endPosition) {
