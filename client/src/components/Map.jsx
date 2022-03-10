@@ -13,15 +13,10 @@ export default function MapContainer({
   point,
   wayPointPosition,
   setWayPointPosition,
-  map,
   setMap,
-  bounds,
 }) {
   useEffect(() => {
     drawPolyline();
-    if (map && startPosition && endPosition) {
-      map.setBounds(bounds, 100, 50, 100, 400);
-    }
   }, [startPosition, endPosition, wayPointPosition]);
 
   const startImage = {
@@ -63,7 +58,7 @@ export default function MapContainer({
     <div>
       <Map
         center={currentLocation}
-        level={6}
+        level={currentLocation.lat === 36.602549 ? 12 : 6}
         onClick={(_t, mouseEvent) => {
           positionHandler(mouseEvent);
         }}
