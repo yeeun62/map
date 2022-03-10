@@ -149,8 +149,6 @@ function App() {
     }
   }
 
-  console.log(currentLocation);
-
   return (
     <BrowserRouter>
       <div className="App">
